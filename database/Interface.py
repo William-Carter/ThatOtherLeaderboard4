@@ -27,20 +27,31 @@ class Interface:
         self.cursor = None
 
 
-    def executeQuery(self, query: str, args: list = ()) -> list[list[any]]|None:
+    def executeQuery(self, query: str, args: list = ()) -> list[dict[str:any]]:
         """
-        Execute a query. Returns the output of result.fetchall()
+        Execute a query, return the results
         
         Parameters:
             query - the query to be executed
             
             args - the arguments to be passed to the query
+        
+        Returns:
+            a list of dicts representing rows where the keys for each dict are the column names and the values are the row's values
         """
 
         self.openConnection()
-        result = self.cursor.execute(query, args).fetchall()
+        result = self.cursor.execute(query, args)
+        columns = [description[0] for description in result.description]
+        values = result.fetchall()
+        output = []
+        for value in values:
+            row = {}
+            for i in range(len(columns)):
+                row[columns[i]] = value[i]
+            output.append(row)
         self.closeConnection()
-        return result
+        return output
     
 
     def insertAndFetchRowID(self, query: str, args: list = ()) -> int:
