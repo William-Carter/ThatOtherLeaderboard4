@@ -12,6 +12,6 @@ class Country:
 def country(db: Interface, id: str) -> Country:
     v = db.executeQuery("""
                         SELECT * FROM Countries WHERE id = ?
-        """, id)
+        """, id)[0]
     
     return Country(db, v['id'], v['name'], v['continent'])
