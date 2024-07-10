@@ -1,4 +1,4 @@
-from Interface import Interface
+from database.Interface import Interface
 
 class Continent:
     def __init__(self, db: Interface, id: str, name: str):
@@ -16,6 +16,11 @@ def continent(db: Interface, id: str) -> Continent:
                         WHERE ContinentNames.isPrimary = 1
                         AND Continents.id = ?
 
-        """, id)[0]
+        """, (id,))
+    
+    if len(v) == 0:
+        return None
+    
+    v = v[0]
     
     return Continent(db, v['id'], v['name'])

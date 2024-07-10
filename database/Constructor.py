@@ -47,7 +47,9 @@ def construct(dbPath: str) -> None:
 	"name"	TEXT UNIQUE,
 	"discordId"	TEXT UNIQUE,
 	"srcId"	TEXT UNIQUE,
+	"representing" TEXT,
 	PRIMARY KEY("id" AUTOINCREMENT)
+	FOREIGN KEY("representing") REFERENCES "Countries"("id")
     )
 
     """)
@@ -159,3 +161,6 @@ def construct(dbPath: str) -> None:
     )
     """)
     
+
+if __name__ == "__main__":
+    construct("ThatOtherLeaderboard.db")

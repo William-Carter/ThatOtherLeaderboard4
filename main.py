@@ -1,14 +1,19 @@
 import interactions
 import os
 import json
+from database.Interface import Interface
 
 dirPath = os.path.dirname(os.path.realpath(__file__))
 
 bot = interactions.Client(intents=interactions.Intents.DEFAULT)
+bot.db = Interface(dirPath+"/ThatOtherLeaderboard.db")
 
 @interactions.listen()
 async def on_startup():
     print("Bot is ready!")
+    print("Bot is in:")
+    for guild in bot.guilds:
+        print(guild.name, guild.id)
 
 
 # Attempt to load all files in the commands directory as extensions
