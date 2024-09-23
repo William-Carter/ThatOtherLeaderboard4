@@ -7,7 +7,6 @@ class Continent:
         self.name = name
 
 
-
 def continent(db: Interface, id: str) -> Continent:
     v = db.executeQuery("""
                         SELECT Continents.id, ContinentNames.name

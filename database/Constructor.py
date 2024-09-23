@@ -1,6 +1,9 @@
 import sqlite3
 
 def construct(dbPath: str) -> None:
+    """
+    Constructs the database from scratch
+    """
     conn = sqlite3.connect(dbPath)
     cursor = conn.cursor()
 
@@ -16,9 +19,10 @@ def construct(dbPath: str) -> None:
 	"continent"	TEXT,
 	"name"	TEXT UNIQUE,
 	"isPrimary"	INTEGER NOT NULL,
-	PRIMARY KEY("continent","name"),
-	FOREIGN KEY("continent") REFERENCES "Continents"("id")
-    )
+	FOREIGN KEY("continent") REFERENCES "Continents"("id"),
+	UNIQUE("continent","isPrimary"),
+	PRIMARY KEY("continent","name")
+	)
     """)
 
     cursor.execute("""
