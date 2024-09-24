@@ -31,6 +31,12 @@ class Leaderboard():
 
             
     def getDiscordFormattedMessage(self) -> str:
+        """
+        Generates the code block leaderboard string, which looks good in discord. Doesn't include a header.
+
+        Returns:
+            The code block containing the leaderboard (starting with backticks, ending with backticks)
+        """
         for row in self.data:
             color = ""
             match row[0]:
