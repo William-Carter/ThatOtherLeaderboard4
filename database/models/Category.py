@@ -11,7 +11,7 @@ class Category:
 def category(db: Interface, id: str) -> Category:
     v = db.executeQuery("""
                         SELECT id, isExtension
-                        FROM Categories
+                        FROM FullGameCategories
                         WHERE id = ?
 
         """, (id,))
@@ -23,7 +23,7 @@ def category(db: Interface, id: str) -> Category:
 
     q = db.executeQuery("""
                         SELECT name, isPrimary
-                        FROM CategoryNames
+                        FROM FullGameCategoryNames
                         WHERE category = ?
                         ORDER BY isPrimary DESC
         """, (id,))
@@ -37,10 +37,10 @@ def category(db: Interface, id: str) -> Category:
 
 def categoryFromName(db: Interface, name: str) -> Category:
     v= db.executeQuery("""
-                    SELECT Categories.id AS ID
-                    FROM CategoryNames
-                    LEFT JOIN Categories on CategoryNames.category = Categories.id
-                    WHERE CategoryNames.name = ?
+                    SELECT FullGameCategories.id AS ID
+                    FROM FullGameCategoryNames
+                    LEFT JOIN FullGameCategories on FullGameCategoryNames.category = FullGameCategories.id
+                    WHERE FullGameCategoryNames.name = ?
     """, (name,))
 
     if len(v) == 0:

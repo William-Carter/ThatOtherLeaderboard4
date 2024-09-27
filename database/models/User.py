@@ -10,6 +10,8 @@ class User:
         self.country = Country.country(db, countryId)
 
 
+
+
 def userFromId(db: Interface, id: int) -> User:
     v = db.executeQuery("""
                     SELECT * FROM Users WHERE id = ?"
@@ -24,7 +26,7 @@ def userFromId(db: Interface, id: int) -> User:
 
 def userFromName(db: Interface, name: str) -> User:
     v = db.executeQuery("""
-                    SELECT * FROM Users WHERE name = ?"
+                    SELECT * FROM Users WHERE name = ?
                     """, (name,))
     
     if len(v) == 0:

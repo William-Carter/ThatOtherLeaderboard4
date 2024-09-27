@@ -1,7 +1,7 @@
 import UI.neatTables
 
 class Leaderboard():
-    def __init__(self, columnNames: list[str], data: list[list[any]], keyColumn: int = 0):
+    def __init__(self, columnNames: list[str], data: list[list[any]], keyColumn: int = 0, startIndex: int = 0, endIndex: int = None):
         """
         A leaderboard to be returned via discord message
 
@@ -14,7 +14,7 @@ class Leaderboard():
         """
         self.data = []
         rowLength = len(columnNames)
-        self.data.append(["#",]+columnNames)
+        
         lastRowValue = -1
         rowPlace = 0
         internalRowPlace = 0
@@ -28,6 +28,14 @@ class Leaderboard():
 
             self.data.append([str(rowPlace),] + row)
             lastRowValue = row[keyColumn]
+
+        if not endIndex:
+            endIndex = len(self.data)
+
+        self.data = self.data[startIndex:endIndex]
+            
+
+        self.data = [["#",]+columnNames]+self.data
 
             
     def getDiscordFormattedMessage(self) -> str:
@@ -50,7 +58,7 @@ class Leaderboard():
             returnColor = "\u001b[0m"
             row[0] = color+str(row[0])+returnColor
 
-        output = "```ansi\n"+UI.neatTables.generateTable(self.data)+"```"
+        output = "```ansi\n"+UI.neatTables.generateTable(self.data, 3)+"```"
         return output
 
         

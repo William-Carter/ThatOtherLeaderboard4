@@ -18,7 +18,13 @@ class Leaderboard(interactions.Extension):
         required=True,
         opt_type=interactions.OptionType.STRING
     )
-
+    @interactions.slash_option(
+        name="start",
+        argument_name="start",
+        description="Where to start the leaderboard (defaults to 1st place)",
+        required=False,
+        opt_type=interactions.OptionType.INTEGER
+    )
     @interactions.slash_option(
         name="country",
         argument_name="country",
@@ -33,8 +39,9 @@ class Leaderboard(interactions.Extension):
         required=False,
         opt_type=interactions.OptionType.STRING
     )
+    
 
-    async def leaderboard(self, ctx: interactions.SlashContext, category: str = None, country: str = None, continent: str = None):
+    async def leaderboard(self, ctx: interactions.SlashContext, category: str = None, start: int = 1, country: str = None, continent: str = None):
         if country and continent:
             await ctx.send(f"Can't filter by country and continent at the same time!")
             return
@@ -72,8 +79,13 @@ class Leaderboard(interactions.Extension):
             header = f"Leaderboard for {categoryObj.name.title()}:\n"
             dbData = database.leaderboards.getLeaderboard(self.bot.db, categoryObj.id)
 
+        # Limit number of rows shown
+        rows = 20
+        startIndex = start-1
+        endIndex = min(startIndex + rows, len(dbData))
+
         formatted = [[x[0], UI.durations.formatted(x[1])] for x in dbData]
-        lb = UI.leaderboards.Leaderboard(["Runner", "Time"], formatted, 1)
+        lb = UI.leaderboards.Leaderboard(["Runner", "Time"], formatted, 1, startIndex, endIndex)
         
         response = header + lb.getDiscordFormattedMessage()
         await ctx.send(response)

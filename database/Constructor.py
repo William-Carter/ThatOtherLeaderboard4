@@ -1,5 +1,4 @@
 import sqlite3
-
 def construct(dbPath: str) -> None:
     """
     Constructs the database from scratch
@@ -20,7 +19,6 @@ def construct(dbPath: str) -> None:
 	"name"	TEXT UNIQUE,
 	"isPrimary"	INTEGER NOT NULL,
 	FOREIGN KEY("continent") REFERENCES "Continents"("id"),
-	UNIQUE("continent","isPrimary"),
 	PRIMARY KEY("continent","name")
 	)
     """)
@@ -38,7 +36,7 @@ def construct(dbPath: str) -> None:
     CREATE TABLE "CountryNames" (
 	"country"	TEXT,
 	"name"	TEXT,
-	"isPrimary"	INTEGER NOT NULL UNIQUE,
+	"isPrimary"	INTEGER NOT NULL,
 	PRIMARY KEY("country","name"),
 	FOREIGN KEY("country") REFERENCES "Countries"("id")
     )
@@ -60,37 +58,66 @@ def construct(dbPath: str) -> None:
 
 
     cursor.execute("""
-    CREATE TABLE "Categories" (
+    CREATE TABLE "FullGameCategories" (
 	"id"	TEXT,
-	"isIndividualLevel"	INTEGER NOT NULL,
 	"isExtension"	INTEGER NOT NULL,
 	PRIMARY KEY("id")
     )
     """)
 
     cursor.execute("""
-    CREATE TABLE "CategoryNames" (
+    CREATE TABLE "FullGameCategoryNames" (
 	"category"	TEXT,
 	"name"	TEXT UNIQUE,
 	"isPrimary"	INTEGER NOT NULL,
 	PRIMARY KEY("category","name"),
-	FOREIGN KEY("category") REFERENCES "Categories"("id")
+	FOREIGN KEY("category") REFERENCES "FullGameCategories"("id")
     )
     """)
 
     cursor.execute("""
-    CREATE TABLE "CategoryPropagations" (
+    CREATE TABLE "FullGameCategoryPropagations" (
 	"baseCategory"	TEXT,
 	"propagatedCategory"	TEXT,
-	FOREIGN KEY("propagatedCategory") REFERENCES "Categories"("id"),
-	FOREIGN KEY("baseCategory") REFERENCES "Categories"("id"),
+	FOREIGN KEY("propagatedCategory") REFERENCES "FullGameCategories"("id"),
+	FOREIGN KEY("baseCategory") REFERENCES "FullGameCategories"("id"),
+	PRIMARY KEY("baseCategory","propagatedCategory")
+    )
+    """)
+    
+    cursor.execute("""
+    CREATE TABLE "IndividualLevelCategories" (
+	"id"	TEXT,
+	"isExtension"	INTEGER NOT NULL,
+	PRIMARY KEY("id")
+    )
+    """)
+
+    cursor.execute("""
+    CREATE TABLE "IndividualLevelCategoryNames" (
+	"category"	TEXT,
+	"name"	TEXT UNIQUE,
+	"isPrimary"	INTEGER NOT NULL,
+	PRIMARY KEY("category","name"),
+	FOREIGN KEY("category") REFERENCES "IndividualLevelCategories"("id")
+    )
+    """)
+
+    cursor.execute("""
+    CREATE TABLE "IndividualLevelCategoryPropagations" (
+	"baseCategory"	TEXT,
+	"propagatedCategory"	TEXT,
+	FOREIGN KEY("propagatedCategory") REFERENCES "IndividualLevelCategories"("id"),
+	FOREIGN KEY("baseCategory") REFERENCES "IndividualLevelCategories"("id"),
 	PRIMARY KEY("baseCategory","propagatedCategory")
     )
     """)
 
+
     cursor.execute("""
     CREATE TABLE "Maps" (
 	"id"	TEXT,
+	"mapOrder" INTEGER NOT NULL UNIQUE,
 	PRIMARY KEY("id")
     )
     """)
@@ -115,9 +142,24 @@ def construct(dbPath: str) -> None:
 	PRIMARY KEY("user","type", "category", "map"),
 	FOREIGN KEY("map") REFERENCES "Maps"("id"),
 	FOREIGN KEY("user") REFERENCES "Users"("id")
-    FOREIGN KEY("category") REFERENCES "Categories"("id")
+    FOREIGN KEY("category") REFERENCES "FullGameCategories"("id")
     )
     """)
+    
+    cursor.execute("""
+	CREATE TABLE "CommunityGoldEligibility" (
+    "user" INTEGER,
+    "category" TEXT,
+    "map" TEXT,
+    "eligible" INTEGER NOT NULL,
+    PRIMARY KEY("user", "category", "map"),
+    FOREIGN KEY("map") REFERENCES "Maps"("id"),
+	FOREIGN KEY("user") REFERENCES "Users"("id")
+    FOREIGN KEY("category") REFERENCES "FullGameCategories"("id")
+    )
+
+
+	""")
 
     cursor.execute("""
     CREATE TABLE "FullGameRuns" (
@@ -135,7 +177,7 @@ def construct(dbPath: str) -> None:
 	"run"	INTEGER,
 	"category"	TEXT,
 	"submittedAs"	INTEGER NOT NULL,
-	FOREIGN KEY("category") REFERENCES "Categories"("id"),
+	FOREIGN KEY("category") REFERENCES "FullGameCategories"("id"),
 	FOREIGN KEY("run") REFERENCES "FullGameRuns"("id"),
 	PRIMARY KEY("run","category")
     )
@@ -161,10 +203,10 @@ def construct(dbPath: str) -> None:
 	"submittedAs"	INTEGER NOT NULL,
 	PRIMARY KEY("run","category"),
 	FOREIGN KEY("run") REFERENCES "IndividualLevelRuns"("id"),
-	FOREIGN KEY("category") REFERENCES "Categories"("id")
+	FOREIGN KEY("category") REFERENCES "IndividualLevelCategories"("id")
     )
     """)
     
 
 if __name__ == "__main__":
-    construct("ThatOtherLeaderboard.db")
+    construct("v4.db")
