@@ -1,5 +1,5 @@
 from database.Interface import Interface
-from database.models import Category
+from database.models.Category import Category
 
 
 def calculateSprm(db: Interface, category: Category, time: float) -> float|None:
@@ -46,7 +46,7 @@ def calculateInverseSprm(db: Interface, category: Category, sprm: float) -> floa
     c = q[0]['c']
 
 
-    return round((sprm/(a*10**b))^(1/c), 3)
+    return round((sprm/(a*10**b))**(1/c), 3)
 
 
 

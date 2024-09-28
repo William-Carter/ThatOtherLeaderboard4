@@ -207,6 +207,17 @@ def construct(dbPath: str) -> None:
     )
     """)
     
+    cursor.execute("""
+    CREATE TABLE "sprmValues" (
+	"category"	TEXT,
+	"a"	REAL NOT NULL,
+	"b"	REAL NOT NULL,
+	"c"	REAL NOT NULL,
+	FOREIGN KEY("category") REFERENCES "FullGameCategories"("id"),
+	PRIMARY KEY("category")
+)
+    """)
+
 
 if __name__ == "__main__":
     construct("v4.db")
