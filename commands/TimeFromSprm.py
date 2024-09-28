@@ -45,7 +45,7 @@ class TimeFromSprm(interactions.Extension):
             categories = database.categories.getMainFullGameCategories(self.bot.db)
             tableData = [["Category", "Time Needed"]]
             for category in categories:
-                tableData.append([category.name.title(), UI.durations.formatted(database.sprm.calculateInverseSprm(self.bot.db, category, sprm))])
+                tableData.append([category.name.title(), UI.durations.formatted(UI.durations.correctToTick(database.sprm.calculateInverseSprm(self.bot.db, category, sprm)))])
 
 
             response = f"An SPRM of {sprm} in each category would require:\n```"
