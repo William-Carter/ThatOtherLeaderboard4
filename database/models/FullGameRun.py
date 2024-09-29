@@ -9,6 +9,7 @@ class FullGameRun:
         self.user = user
         self.time = time
         self.date = date
+        self.categories = categories
 
     def getRankInCategory(self, category: Category) -> int:
         rank = self.db.executeQuery("""

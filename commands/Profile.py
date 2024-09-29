@@ -42,13 +42,16 @@ class Profile(interactions.Extension):
             if not category.isExtension:
                 profilePbCount += 1
                 run = userPersonalBests[category]
-                globalRank = run.getRankInCategory(category)
+                
                 sprm = database.sprm.calculateSprm(self.bot.db, category, run.time)
+                globalRank = run.getRankInCategory(category)
+                countryRank = run.getRankInCategoryInCountry(category, userObj.country)
+                continentRank = run.getRankInCategoryInContinent(category, userObj.country.continent)
+
                 avgRank += globalRank
                 amcSum += run.time
                 sprmSum += sprm
-                countryRank = run.getRankInCategoryInCountry(category, userObj.country)
-                continentRank = run.getRankInCategoryInContinent(category, userObj.country.continent)
+                
 
                 data.append([category.name.title(), 
                              UI.durations.formatted(run.time),
@@ -59,8 +62,7 @@ class Profile(interactions.Extension):
                              ])
                 
         avgRank = round(avgRank/profilePbCount, 2)
-                
-        response = "```ansi"
+        response = f"```ansi\nProfile for {userObj.name}"
 
 
         response += "\n"+UI.neatTables.generateTable(data, padding=3)

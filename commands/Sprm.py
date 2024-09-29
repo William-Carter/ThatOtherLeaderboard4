@@ -1,15 +1,12 @@
 import interactions
-import database.leaderboards
 import database.sprm
-import database.models.Country
 import database.models.Category
-import UI.leaderboards
 import UI.durations
 
 class Sprm(interactions.Extension):
     @interactions.slash_command(
         name="sprm",
-        description="Calculate the SPRM for a given command",
+        description="Calculate the SPRM for a given time in a given category",
     )
 
     @interactions.slash_option(
