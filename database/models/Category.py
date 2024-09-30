@@ -2,10 +2,17 @@ from database.Interface import Interface
 
 class Category:
     def __init__(self, db: Interface, id: str, isExtension: bool, names: list[str]):
+        self.db = db
         self.id = id
         self.isExtension = isExtension
         self.names = names
         self.name = names[0]
+
+    def __eq__(self, other):
+        return isinstance(other, Category) and self.id == other.id
+    
+    def __hash__(self):
+        return hash(self.id)
 
 
 def category(db: Interface, id: str) -> Category:

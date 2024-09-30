@@ -3,13 +3,16 @@ from database.models.Category import Category
 from database.models.Country import Country
 from database.models.Continent import Continent
 class FullGameRun:
-    def __init__(self, db: Interface, id: int, user: int, time: float, date: str, categories: list[Category]):
+    def __init__(self, db: Interface, id: int, userId: int, time: float, date: str, categories: list[Category]):
         self.db = db
         self.id = id
-        self.user = user
+        self.userId = userId
         self.time = time
         self.date = date
         self.categories = categories
+
+    def __str__(self):
+        return f"{self.id} - {self.userId} - {self.time} - {self.date} - {self.categories[0]}"
 
     def getRankInCategory(self, category: Category) -> int:
         rank = self.db.executeQuery("""
