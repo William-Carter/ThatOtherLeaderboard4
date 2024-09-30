@@ -43,7 +43,6 @@ class Delete(interactions.Extension):
 
 
         else:
-            print(confirmNumber.lower(), deletion.Delete.getVerificationWord(runId))
             if confirmNumber.lower() == deletion.Delete.getVerificationWord(runId):
                 database.submissions.deleteFullGameRun(self.bot.db, runId)
                 await ctx.send("Run deleted.")
