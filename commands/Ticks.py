@@ -1,8 +1,5 @@
 import interactions
-import database.models.User
 import UI.durations
-import UI.neatTables
-import database.sprm
 
 class Ticks(interactions.Extension):
     @interactions.slash_command(
@@ -17,10 +14,13 @@ class Ticks(interactions.Extension):
         opt_type=interactions.OptionType.STRING
     )
 
-    async def ticks(self, ctx: interactions.SlashContext, time: str = None):
+    async def ticks(self, ctx: interactions.SlashContext, time: str):
         timeNum = UI.durations.seconds(time)
         if not timeNum:
             await ctx.send("Invalid time")
+            return
+        if timeNum == float('inf'):
+            await ctx.send("Time too large!")
             return
         
         ticks = int(round(timeNum/0.015, 0))
