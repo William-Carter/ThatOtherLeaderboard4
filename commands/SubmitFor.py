@@ -1,11 +1,18 @@
 import interactions
-import database.models.User
 import commandlogic.Submit
-
-class Submit(interactions.Extension):
+from database.models import User
+class SubmitFor(interactions.Extension):
     @interactions.slash_command(
-        name="submit",
-        description="Submit a run to the leaderboard",
+        name="submitfor",
+        description="Submit a run to the leaderboard on behalf of someone else",
+    )
+
+    @interactions.slash_option(
+        name="user",
+        argument_name="username",
+        description="Who to submit on behalf of",
+        required=True,
+        opt_type=interactions.OptionType.STRING
     )
 
     @interactions.slash_option(
@@ -31,32 +38,14 @@ class Submit(interactions.Extension):
         opt_type=interactions.OptionType.STRING
     )
 
-    async def submit(self, ctx: interactions.SlashContext, category: str, time: str, date: str = None):
-
-        userObj = database.models.User.userFromDiscordId(self.bot.db, ctx.author.id)
+    async def submitfor(self, ctx: interactions.SlashContext, username: str, category: str, time: str, date: str = None):
+        userObj = User.userFromName(self.bot.db, username)
         if userObj == None:
-            ctx.send("User is not registered!")
+            ctx.send(f"No user with name {username}")
             return
         
         # Logic moved to separate file for reuse in moderator commands
         await commandlogic.Submit.Submit(self, ctx, userObj, category, time, date)
-
-        
-
-
-
-
-        
-
-                
-            
-
-
-        
         
 
         
-        
-    
-
-
