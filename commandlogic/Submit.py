@@ -1,6 +1,8 @@
 import interactions
 import UI.validations
 import UI.durations
+import database.models
+import database.models.FullGameRun
 import database.submissions
 from database.models.User import User
 from database.models import Category
@@ -64,3 +66,25 @@ async def Submit(command: interactions.Extension, ctx: interactions.SlashContext
 
 
     await ctx.send(response)
+
+    await activityFeed(command, userObj, categoryObj, previousPb, run)
+
+
+
+async def activityFeed(command: interactions.Extension, userObj: User, categoryObj: Category.Category, previousPb: database.models.FullGameRun.FullGameRun, run: database.models.FullGameRun.FullGameRun):
+    response = f"{userObj.name} achieved a time of {UI.durations.formatted(run.time)} in the {categoryObj.name.title()} category"
+
+    if run.getRankInCategory(categoryObj) == 1:
+        response += ", a new World Record!"
+
+    elif run.getRankInCategoryInContinent(categoryObj, userObj.country.continent) == 1:
+        response += f", a new record for {userObj.country.continent.name.title()}!"
+
+    elif run.getRankInCategoryInCountry(categoryObj, userObj.country) == 1:
+        response += f", a new record for {userObj.country.name.title()}!"
+
+    else:
+        response += "!"
+
+
+    await command.bot.activityFeed.send("`"+response+"`")

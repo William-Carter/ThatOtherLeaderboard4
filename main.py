@@ -8,8 +8,10 @@ dirPath = os.path.dirname(os.path.realpath(__file__))
 bot = interactions.Client(intents=interactions.Intents.DEFAULT)
 bot.db = Interface(dirPath+"/ThatOtherLeaderboard.db")
 
+
 @interactions.listen()
 async def on_startup():
+    bot.activityFeed = await bot.fetch_channel(1290549823992238120)
     print("Bot is ready!")
     print("Bot is in:")
     for guild in bot.guilds:
