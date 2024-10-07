@@ -73,18 +73,19 @@ async def Submit(command: interactions.Extension, ctx: interactions.SlashContext
 
 async def activityFeed(command: interactions.Extension, userObj: User, categoryObj: Category.Category, previousPb: database.models.FullGameRun.FullGameRun, run: database.models.FullGameRun.FullGameRun):
     response = f"{userObj.name} achieved a time of {UI.durations.formatted(run.time)} in the {categoryObj.name.title()} category"
+    globalRank = run.getRankInCategory(categoryObj)
 
-    if run.getRankInCategory(categoryObj) == 1:
+    if globalRank == 1:
         response += ", a new World Record!"
 
     elif run.getRankInCategoryInContinent(categoryObj, userObj.country.continent) == 1:
-        response += f", a new record for {userObj.country.continent.name.title()}!"
+        response += f", a new record for {userObj.country.continent.name.title()} and {UI.durations.formatLeaderBoardPosition(globalRank)} in the world!"
 
     elif run.getRankInCategoryInCountry(categoryObj, userObj.country) == 1:
-        response += f", a new record for {userObj.country.name.title()}!"
+        response += f", a new record for {userObj.country.name.title()} and {UI.durations.formatLeaderBoardPosition(globalRank)} in the world!"
 
     else:
-        response += "!"
+        response += f", ranking them {UI.durations.formatLeaderBoardPosition(globalRank)} in the world"
 
 
     await command.bot.activityFeed.send("`"+response+"`")
