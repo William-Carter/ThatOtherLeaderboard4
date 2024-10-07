@@ -5,7 +5,7 @@ from database.Interface import Interface
 
 dirPath = os.path.dirname(os.path.realpath(__file__))
 
-bot = interactions.Client(intents=interactions.Intents.DEFAULT)
+bot = interactions.Client(intents=interactions.Intents.DEFAULT, send_command_tracebacks=False)
 bot.db = Interface(dirPath+"/ThatOtherLeaderboard.db")
 
 
@@ -16,6 +16,11 @@ async def on_startup():
     print("Bot is in:")
     for guild in bot.guilds:
         print(guild.name, guild.id)
+
+
+@interactions.listen()
+async def on_command_error(event: interactions.events.CommandError):
+    await event.ctx.send("Encountered an error!")
 
 
 # Attempt to load all files in the commands directory as extensions
