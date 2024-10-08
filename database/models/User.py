@@ -11,6 +11,20 @@ class User:
         self.discordId = discordId
         self.country = Country.country(db, countryId)
 
+    def updateName(self, newName: str):
+        """
+        Update the user's name in the database
+        """
+
+        r = self.db.insertAndFetchRowID(
+            """
+            UPDATE Users
+            SET name = ?
+            WHERE id = ?
+            """, (newName, self.id))
+        
+        self.name = newName
+
 
     def getPersonalBests(self) -> dict[Category.Category: FullGameRun.FullGameRun]:
         """
