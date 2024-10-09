@@ -1,5 +1,6 @@
 import interactions
 import UI.durations
+import UI.differences
 from database.models import Category
 from database.models import User
 from database.models import Map
@@ -7,7 +8,7 @@ from database import Maps
 from database import MapTimes
 
 
-async def Updategolds(command: interactions.Extension, ctx: interactions.SlashContext, userObj: User, category: str, times: str):
+async def Updategolds(command: interactions.Extension, ctx: interactions.SlashContext, userObj: User.User, category: str, times: str):
     categoryObj = Category.categoryFromName(command.bot.db, category)
     if categoryObj == None:
         await ctx.send("Invalid category!")
@@ -26,13 +27,20 @@ async def Updategolds(command: interactions.Extension, ctx: interactions.SlashCo
         if not timeNum:
             await ctx.send(f"Time for {maps[index].name} invalid!")
             return
+        
+        timeNum = UI.durations.correctToTick(timeNum)
         timeNums.append([maps[index], timeNum])
         
-    
+    oldSob = userObj.getSumOfBest(categoryObj)
     MapTimes.upsertMapTimes(command.bot.db, userObj, "gold", categoryObj, timeNums)
-    sob = UI.durations.formatted(sum([x[1] for x in timeNums]))
-    await ctx.send(f"```ansi\nUpdated golds! Your new sum of best is {sob}!```")
-    # TODO get previous sum of best and show difference with highlighted text
+    newSob = sum([x[1] for x in timeNums])
+    difference = round(oldSob-newSob, 3)
+
+    newSobFormatted = UI.durations.formatted(newSob)
+
+
+    await ctx.send(f"```ansi\nUpdated golds! Your new sum of best is {newSobFormatted} ({UI.differences.colourDifference(difference)})!```")
+
 
 
 

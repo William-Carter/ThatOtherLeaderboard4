@@ -2,6 +2,8 @@ from database.Interface import Interface
 from database.models import Country
 from database.models import FullGameRun
 from database.models import Category
+from database.models import Map
+from database import Maps
 class User:
     def __init__(self, db: Interface, id: int, name: str, srcId: str, discordId: str, countryId: str):
         self.db = db
@@ -95,6 +97,36 @@ class User:
             runObjects.append(newRunObject)
 
         return runObjects
+    
+
+    def getMapTimes(self, category: Category.Category, type: str) -> dict[Map.Map: float]:
+        r = self.db.executeQuery(
+            """
+            SELECT MapTimes.map, MapTimes.time
+            FROM MapTimes
+            LEFT JOIN Maps ON MapTimes.map = Maps.id
+            WHERE user = ?
+            AND type = ?
+            AND category = ?
+            ORDER BY Maps.mapOrder
+            """,
+            (self.id, type, category.id)
+        )
+
+        maps = {}
+        for row in r:
+            maps[Map.map(self.db, row['map'])] = row['time']
+        return maps
+    
+    def getGolds(self, category: Category.Category) -> dict[Map.Map: float]:
+        return self.getMapTimes(category, "gold")
+    
+    def getSumOfBest(self, category: Category.Category) -> float:
+        golds = self.getGolds(category)
+        return round(sum([golds[x] for x in golds.keys()]), 3)
+
+
+
 
 
 

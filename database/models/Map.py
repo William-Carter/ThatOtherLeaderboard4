@@ -7,6 +7,13 @@ class Map:
         self.order = order
         self.names = names
         self.name = names[0]
+
+
+    def __eq__(self, other):
+        return isinstance(other, Map) and self.id == other.id
+    
+    def __hash__(self):
+        return hash(self.id)
         
 
 
