@@ -3,6 +3,7 @@ from database.models import Country
 from database.models import FullGameRun
 from database.models import Category
 from database.models import Map
+from database.models import Gold
 from database import Maps
 class User:
     def __init__(self, db: Interface, id: int, name: str, srcId: str, discordId: str, countryId: str):
@@ -114,16 +115,23 @@ class User:
         )
 
         maps = {}
+        if len(r) == 0:
+            return None
         for row in r:
             maps[Map.map(self.db, row['map'])] = row['time']
         return maps
     
-    def getGolds(self, category: Category.Category) -> dict[Map.Map: float]:
-        return self.getMapTimes(category, "gold")
+    def getGolds(self, category: Category.Category) -> list[Gold.Gold]:
+        mapTimes = self.getMapTimes(category, "gold")
+        if mapTimes == None:
+            return None
+        golds = [Gold.Gold(self.db, self, category, m, mapTimes[m]) for m in mapTimes.keys()]
+        return golds
+        
     
     def getSumOfBest(self, category: Category.Category) -> float:
         golds = self.getGolds(category)
-        return round(sum([golds[x] for x in golds.keys()]), 3)
+        return round(sum([gold.time for gold in golds]), 3)
 
 
 
