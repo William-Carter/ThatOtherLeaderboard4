@@ -6,6 +6,7 @@ from database.models import User
 from database.models import Map
 from database import Maps
 from database import MapTimes
+from database import Golds
 
 
 async def Updategolds(command: interactions.Extension, ctx: interactions.SlashContext, userObj: User.User, category: str, times: str):
@@ -32,16 +33,35 @@ async def Updategolds(command: interactions.Extension, ctx: interactions.SlashCo
         timeNums.append([maps[index], timeNum])
         
     oldSob = userObj.getSumOfBest(categoryObj)
+    oldComgolds = Golds.getCommunityGolds(command.bot.db, categoryObj)
     MapTimes.upsertMapTimes(command.bot.db, userObj, "gold", categoryObj, timeNums)
     newSob = sum([x[1] for x in timeNums])
+    newComgolds = Golds.getCommunityGolds(command.bot.db, categoryObj)
     difference = round(oldSob-newSob, 3)
 
     newSobFormatted = UI.durations.formatted(newSob)
 
-
     await ctx.send(f"```ansi\nUpdated golds! Your new sum of best is {newSobFormatted} ({UI.differences.colourDifference(difference)})!```")
-
+    await activityFeed(command, userObj, categoryObj, oldComgolds, newComgolds)
 
 
 
     
+async def activityFeed(command: interactions.Extension, userObj: User.User, categoryObj: Category.Category, oldComgolds: list, newComgolds: list):
+    updates = []
+    for index, gold in enumerate(oldComgolds):
+        if gold[1] != newComgolds[index][1]:
+            if gold[1] > newComgolds[index][1]:
+                updates.append(
+                    f"{userObj.name} beat the community gold for {categoryObj.name.title()} {gold[0].name} with a time of {UI.durations.formatted(newComgolds[index][1])}!"
+                )
+
+        elif len(gold[2]) != len(newComgolds[index][2]):
+            updates.append(
+                f"{userObj.name} tied the community gold for {categoryObj.name.title()} {gold[0].name} with a time of {UI.durations.formatted(newComgolds[index][1])}!"
+            )
+
+
+    for update in updates:
+        await command.bot.activityFeed.send("`"+update+"`")
+
