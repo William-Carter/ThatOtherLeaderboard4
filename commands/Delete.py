@@ -10,6 +10,7 @@ class Delete(interactions.Extension):
     @interactions.slash_command(
         name="delete",
         description="Delete a run from the database",
+        scopes=[1081155162065862697]
     )
 
     @interactions.slash_option(

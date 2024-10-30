@@ -5,6 +5,7 @@ class SubmitFor(interactions.Extension):
     @interactions.slash_command(
         name="submitfor",
         description="Submit a run to the leaderboard on behalf of someone else",
+        scopes=[1081155162065862697]
     )
 
     @interactions.slash_option(

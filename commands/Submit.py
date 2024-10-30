@@ -6,6 +6,7 @@ class Submit(interactions.Extension):
     @interactions.slash_command(
         name="submit",
         description="Submit a run to the leaderboard",
+        scopes=[1081155162065862697]
     )
 
     @interactions.slash_option(

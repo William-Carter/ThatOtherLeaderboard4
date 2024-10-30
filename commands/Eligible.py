@@ -7,6 +7,7 @@ class Eligible(interactions.Extension):
     @interactions.slash_command(
         name="eligible",
         description="Toggle whether a run is eligible to be on the community gold leaderboard",
+        scopes=[1081155162065862697]
     )
 
     @interactions.slash_option(

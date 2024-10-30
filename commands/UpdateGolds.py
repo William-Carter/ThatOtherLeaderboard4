@@ -6,6 +6,7 @@ class UpdateGolds(interactions.Extension):
     @interactions.slash_command(
         name="updategolds",
         description="Update your golds for a given category",
+        scopes=[1081155162065862697]
     )
 
     @interactions.slash_option(
