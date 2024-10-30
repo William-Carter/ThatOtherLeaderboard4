@@ -3,7 +3,16 @@ from database.models import Category
 from database.models import Map
 from database.models import User
 
-def getCommunityGolds(db: Interface, category: Category.Category):
+def getCommunityGolds(db: Interface, category: Category.Category) -> list:
+    """
+    Returns a list of the community golds
+
+    Parameters:
+        category - The category you want the comgolds for
+
+    Returns:
+        A list in the form [[Map.Map, time, [User.User]]]
+    """
     r = db.executeQuery(
         """
         SELECT mt.map, mt.user, mt.time
