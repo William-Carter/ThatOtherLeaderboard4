@@ -122,11 +122,32 @@ class User:
         return maps
     
     def getGolds(self, category: Category.Category) -> list[Gold.Gold]:
-        mapTimes = self.getMapTimes(category, "gold")
-        if mapTimes == None:
+        r = self.db.executeQuery(
+            """
+            SELECT MapTimes.map, MapTimes.time, cge.eligible
+            FROM MapTimes
+            LEFT JOIN Maps ON MapTimes.map = Maps.id
+            LEFT JOIN CommunityGoldEligibility cge
+            ON cge.user = MapTimes.user
+            AND cge.category = MapTimes.category
+            AND cge.map = MapTimes.map
+            WHERE MapTimes.user = ?
+            AND type = "gold"
+            AND MapTimes.category = ?
+            ORDER BY Maps.mapOrder
+            """,
+            (self.id, category.id)
+        )
+
+        if len(r) == 0:
             return None
-        golds = [Gold.Gold(self.db, self, category, m, mapTimes[m]) for m in mapTimes.keys()]
+        golds = []
+        for row in r:
+            goldMap = Map.map(self.db, row['map'])
+            golds.append(Gold.Gold(self.db, self, category, goldMap, row['time'], row['eligible']))
+
         return golds
+        
         
     
     def getSumOfBest(self, category: Category.Category) -> float:
