@@ -3,7 +3,9 @@ from database.models import Category
 from database.models import Map
 from database.models import User
 
+
 def getCommunityGolds(db: Interface, category: Category.Category) -> list:
+
     """
     Returns a list of the community golds
 
@@ -52,3 +54,35 @@ def getCommunityGolds(db: Interface, category: Category.Category) -> list:
         cgolds.append([mapObj, comgolds[cgold]["time"], runners])
 
     return cgolds
+
+def getSumOfBestLeaderboard(db: Interface, category: Category.Category) -> list:
+    r = db.executeQuery(
+        """
+        SELECT Users.id, SUM(MapTimes.time) as sob
+        FROM MapTimes
+        LEFT JOIN Users ON MapTimes.user = Users.id
+        WHERE MapTimes.category = ?
+        AND MapTimes.type = "gold"
+        GROUP BY Users.id
+        ORDER BY sob
+        """, (category.id,))
+    
+    sobList = [[User.userFromId(db, sob['id']), sob['sob']] for sob in r]
+    return sobList
+
+
+def getGoldLeaderboard(db: Interface, category: Category.Category, map: Map.Map) -> list:
+    r = db.executeQuery(
+        """
+        SELECT Users.id, MapTimes.time as sob
+        FROM MapTimes
+        LEFT JOIN Users ON MapTimes.user = Users.id
+        WHERE MapTimes.category = ?
+        AND MapTimes.map = ?
+        AND MapTimes.type = "gold"
+        GROUP BY Users.id
+        ORDER BY sob
+        """, (category.id, map.id))
+    
+    goldList = [[User.userFromId(db, sob['id']), sob['sob']] for sob in r]
+    return goldList
