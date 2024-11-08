@@ -1,5 +1,6 @@
 from database.Interface import Interface
 from database.models.Category import Category
+from database.models import User
 
 
 def calculateSprm(db: Interface, category: Category, time: float) -> float|None:
@@ -52,7 +53,7 @@ def calculateInverseSprm(db: Interface, category: Category, sprm: float) -> floa
 
 def getSprmLeaderboard(db: Interface):
     q = db.executeQuery("""
-        SELECT Users.name, ROUND(SUM(score), 2) as sprm
+        SELECT Users.id, Users.name, ROUND(SUM(score), 2) as sprm, RANK() OVER (ORDER BY SUM(score) DESC) AS placement
         FROM
         (
             SELECT 
@@ -72,3 +73,13 @@ def getSprmLeaderboard(db: Interface):
     """)
 
     return q
+
+
+def getSprmPlacement(db: Interface, user: User.User):
+    sprmBoard = getSprmLeaderboard(db)
+    for sprm in sprmBoard:
+        if user.id == sprm['id']:
+            return [sprm['sprm'], sprm['placement']]
+        
+    return None
+    

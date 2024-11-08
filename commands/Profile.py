@@ -1,8 +1,10 @@
 import interactions
+import database.leaderboards
 import database.models.User
 import UI.durations
 import UI.neatTables
 import database.sprm
+import database.AMC
 
 class Profile(interactions.Extension):
     @interactions.slash_command(
@@ -33,9 +35,7 @@ class Profile(interactions.Extension):
 
         userPersonalBests = userObj.getPersonalBests()
         data = [["Category", "Time", "SPRM", "WR", "CR", "NR"]]
-        amcSum = 0
-        avgRank = 0
-        sprmSum = 0
+        
         profilePbCount = 0
 
         for category in userPersonalBests.keys():
@@ -47,10 +47,6 @@ class Profile(interactions.Extension):
                 globalRank = run.getRankInCategory(category)
                 countryRank = run.getRankInCategoryInCountry(category, userObj.country)
                 continentRank = run.getRankInCategoryInContinent(category, userObj.country.continent)
-
-                avgRank += globalRank
-                amcSum += run.time
-                sprmSum += sprm
                 
 
                 data.append([category.name.title(), 
@@ -60,16 +56,31 @@ class Profile(interactions.Extension):
                              UI.durations.formatLeaderBoardPosition(continentRank, True),
                              UI.durations.formatLeaderBoardPosition(countryRank, True)
                              ])
-                
-        avgRank = round(avgRank/profilePbCount, 2)
+
+        amcResult = database.AMC.getAmc(self.bot.db, userObj)
+        if amcResult:
+            amcTime, amcRank = amcResult
+
+        avgResult = database.leaderboards.getAverageRank(self.bot.db, userObj)
+        if avgResult:
+            avgRank, avgRankRank = avgResult
+
+        sprmResult = database.sprm.getSprmPlacement(self.bot.db, userObj)
+        if sprmResult:
+            sprmSum, sprmPlacement = sprmResult
+
         response = f"```ansi\nProfile for {userObj.name}"
 
 
         response += "\n"+UI.neatTables.generateTable(data, padding=3)
 
-        response += f"\nAMC Summary:  {UI.durations.formatted(amcSum)}"
-        response += f"\nAverage Rank: {avgRank}"
-        response += f"\nOverall SPRM: {int(round(sprmSum, 0))}"
+        if amcResult:
+            response += f"\nAMC Summary:  {UI.durations.formatted(amcTime)} ({UI.durations.formatLeaderBoardPosition(amcRank, True)})"
+        if avgResult:
+            response += f"\nAverage Rank: {avgRank} ({UI.durations.formatLeaderBoardPosition(avgRankRank, True)})"
+
+        if sprmResult:
+            response += f"\nOverall SPRM: {int(round(sprmSum, 0))} ({UI.durations.formatLeaderBoardPosition(sprmPlacement, True)})"
 
         response += f"\n\nRepresenting {userObj.country.name.title()}"
 
