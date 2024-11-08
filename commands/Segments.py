@@ -1,14 +1,15 @@
 import interactions
 import database.models.User
 import database.models.Gold
+import database.models.Category
 import UI.durations
 import UI.neatTables
 import database.sprm
 
-class Golds(interactions.Extension):
+class Segments(interactions.Extension):
     @interactions.slash_command(
-        name="golds",
-        description="See a user's golds",
+        name="segments",
+        description="See a user's PB segments",
     )
     @interactions.slash_option(
         name="category",
@@ -21,12 +22,12 @@ class Golds(interactions.Extension):
     @interactions.slash_option(
         name="user",
         argument_name="username",
-        description="The user whose golds you wish to see. Defaults to yourself if left blank.",
+        description="The user whose segments you wish to see. Defaults to yourself if left blank.",
         required=False,
         opt_type=interactions.OptionType.STRING
     )
 
-    async def golds(self, ctx: interactions.SlashContext, category: str, username: str = None):
+    async def segments(self, ctx: interactions.SlashContext, category: str, username: str = None):
         if username:
             userObj = database.models.User.userFromName(self.bot.db, username.lower())
             if userObj == None:
@@ -47,34 +48,22 @@ class Golds(interactions.Extension):
             return
             
 
-        golds = userObj.getGolds(categoryObj)
+        segments = userObj.getPbSegments(categoryObj)
+        if segments == None:
+            await ctx.send("User has no recorded PB segments")
 
-        if golds == None:
-            await ctx.send(f"{userObj.name} hasn't recorded any golds for this category!")
-            return
+        tableData = [["Map", "Time"]]
+        total = 0
+        for row in segments:
+            total += row[1]
+            tableData.append([row[0].name, UI.durations.formatted(row[1])])
 
-        output = f"```ansi\n{categoryObj.name.title()} golds for {userObj.name}:\n"
-        tableData = [["Map", "Time", "Rank"]]
-        ineligibleGold = False
-        for gold in golds:
-            position = gold.getRank()
-            if position == -1:
-                rank = ""
-                ineligibleGold = True
-            else:
-                rank = UI.durations.formatLeaderBoardPosition(position, colorCode=True)
-            tableData.append([
-                gold.map.name,
-                UI.durations.formatted(gold.time),
-                rank
-            ])
+        tableData += [["", ""], ["Total", UI.durations.formatted(total)]]
 
+        output = f"```\n{categoryObj.name.title()} PB Segments for {userObj.name}:\n"
         output += UI.neatTables.generateTable(tableData)
-        if ineligibleGold:
-            output += "\nGolds without a placement aren't valid for comgold due to differing strats\nUse /eligible to fix any inaccuracies"
         output += "```"
 
         await ctx.send(output)
 
-        
 

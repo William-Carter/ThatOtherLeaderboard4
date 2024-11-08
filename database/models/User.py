@@ -153,7 +153,24 @@ class User:
     def getSumOfBest(self, category: Category.Category) -> float:
         golds = self.getGolds(category)
         return round(sum([gold.time for gold in golds]), 3)
+    
 
+    def getPbSegments(self, category: Category.Category) -> list|None:
+        r = self.db.executeQuery(
+            """
+            SELECT Maps.id AS map, MapTimes.time
+            FROM MapTimes
+            LEFT JOIN Maps ON MapTimes.map = Maps.id
+            WHERE MapTimes.category = ?
+            AND Maptimes.user = ?
+            AND MapTimes.type = "segment"
+            ORDER BY Maps.mapOrder
+            """, (category.id, self.id))
+        
+        if len(r) == 0:
+            return None
+
+        return [[Map.map(self.db, segment['map']), segment['time']] for segment in r]
 
 
 
