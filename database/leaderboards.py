@@ -8,20 +8,19 @@ def getLeaderboard(db: Interface, category: str) -> list[list[str]]:
         category - the id of the category
 
     Returns:
-        A list of rows formatted as [username, time]
+        A list of rows formatted as [username, time, placement, userid]
     
     """
     r = db.executeQuery("""
-                    SELECT Users.name as USER, MIN(fgr.time) as TIME
+                    SELECT Users.name as USER, MIN(fgr.time) as TIME, RANK() OVER (ORDER BY fgr.time) AS PLACEMENT, Users.id as USERID
                     FROM FullGameRunCategories fgrc
                     LEFT JOIN FullGameRuns fgr ON fgrc.run = fgr.id
                     LEFT JOIN Users on fgr.user = Users.id
                     WHERE fgrc.category = ?
                     GROUP BY fgr.user
-                    ORDER BY fgr.time
     """, (category.lower(),))
 
-    output = [[x['USER'], x['TIME']] for x in r]
+    output = [[x['USER'], x['TIME'], x['PLACEMENT'], x['USERID']] for x in r]
 
     return output
 
@@ -38,17 +37,16 @@ def getCountryLeaderboard(db: Interface, category: str, country: str) -> list[li
     
     """
     r = db.executeQuery("""
-                    SELECT Users.name as USER, MIN(fgr.time) as TIME
+                    SELECT Users.name as USER, MIN(fgr.time) as TIME, RANK() OVER (ORDER BY fgr.time) AS PLACEMENT, Users.id as USERID
                     FROM FullGameRunCategories fgrc
                     LEFT JOIN FullGameRuns fgr ON fgrc.run = fgr.id
                     LEFT JOIN Users ON fgr.user = Users.id
                     WHERE fgrc.category = ?
                     AND Users.representing = ? 
                     GROUP BY fgr.user
-                    ORDER BY fgr.time
     """, (category, country))
 
-    output = [[x['USER'], x['TIME']] for x in r]
+    output = [[x['USER'], x['TIME'], x['PLACEMENT'], x['USERID']] for x in r]
 
     return output
 
@@ -68,7 +66,7 @@ def getContinentLeaderboard(db: Interface, category: str, continent: str) -> lis
     """
 
     r = db.executeQuery("""
-                    SELECT Users.name as USER, MIN(fgr.time) as TIME
+                    SELECT Users.name as USER, MIN(fgr.time) as TIME, RANK() OVER (ORDER BY fgr.time) AS PLACEMENT, Users.id as USERID
                     FROM FullGameRunCategories fgrc
                     LEFT JOIN FullGameRuns fgr ON fgrc.run = fgr.id
                     LEFT JOIN Users ON fgr.user = Users.id
@@ -76,10 +74,9 @@ def getContinentLeaderboard(db: Interface, category: str, continent: str) -> lis
                     WHERE fgrc.category = ?
                     AND Countries.continent = ? 
                     GROUP BY fgr.user
-                    ORDER BY fgr.time
     """, (category, continent))
 
-    output = [[x['USER'], x['TIME']] for x in r]
+    output = [[x['USER'], x['TIME'], x['PLACEMENT'], x['USERID']] for x in r]
 
     return output
 
