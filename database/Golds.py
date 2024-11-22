@@ -72,6 +72,16 @@ def getSumOfBestLeaderboard(db: Interface, category: Category.Category) -> list:
 
 
 def getGoldLeaderboard(db: Interface, category: Category.Category, map: Map.Map) -> list:
+    """
+    Gets the gold leaderboard for a specific map/category combination
+
+    Parameters:
+        category - The category object
+        map - The map object
+
+    Returns:
+        A list of lists in the form [[UserObj, goldTime]], ordered by goldTime
+    """
     r = db.executeQuery(
         """
         SELECT Users.id, MapTimes.time as sob

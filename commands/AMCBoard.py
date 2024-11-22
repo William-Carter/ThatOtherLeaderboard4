@@ -22,10 +22,6 @@ class AMCBoard(interactions.Extension):
 
         data = [[amc["Name"], UI.durations.formatted(amc["AMCTotal"])] for amc in AMC.getAmcLeaderboard(self.bot.db)]
 
-        
-        rows = 20
-        startIndex = start-1
-        endIndex = min(startIndex + rows, len(data))
-        gb = UI.leaderboards.Leaderboard(["Runner", "AMC"], data, startIndex=startIndex, endIndex=endIndex)
+        gb = UI.leaderboards.Leaderboard(["Runner", "AMC"], data, 1, start)
 
         await ctx.send(f"AMC Leaderboard:\n"+gb.getDiscordFormattedMessage())

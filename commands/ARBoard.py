@@ -18,13 +18,7 @@ class ARBoard(interactions.Extension):
     )
 
     async def arboard(self, ctx: interactions.SlashContext, start: int = 1):
-        
-
         data = [[ar["name"], str(ar["avgRank"])] for ar in leaderboards.getAverageRankLeadboard(self.bot.db)]
-        
-        rows = 20
-        startIndex = start-1
-        endIndex = min(startIndex + rows, len(data))
-        gb = UI.leaderboards.Leaderboard(["Runner", "Average Rank"], data, startIndex=startIndex, endIndex=endIndex)
+        gb = UI.leaderboards.Leaderboard(["Runner", "Average Rank"], data, 1, start)
 
         await ctx.send(f"Average Rank Leaderboard:\n"+gb.getDiscordFormattedMessage())

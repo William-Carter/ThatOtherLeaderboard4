@@ -25,13 +25,8 @@ class Sprmboard(interactions.Extension):
 
         dbData = database.sprm.getSprmLeaderboard(self.bot.db)
 
-        # Limit number of rows shown
-        rows = 20
-        startIndex = start-1
-        endIndex = min(startIndex + rows, len(dbData))
-
         formatted = [[x['name'], str(int(round(x['sprm'], 0)))] for x in dbData]
-        lb = UI.leaderboards.Leaderboard(["Runner", "SPRM"], formatted, 1, startIndex, endIndex)
+        lb = UI.leaderboards.Leaderboard(["Runner", "SPRM"], formatted, 1, start)
         
         response = header + lb.getDiscordFormattedMessage()
         await ctx.send(response)

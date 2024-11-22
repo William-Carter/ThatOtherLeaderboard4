@@ -1,7 +1,7 @@
 import UI.neatTables
 
 class Leaderboard():
-    def __init__(self, columnNames: list[str], data: list[list[any]], keyColumn: int = 0, startIndex: int = 0, endIndex: int = None):
+    def __init__(self, columnNames: list[str], data: list[list[any]], keyColumn: int = 0, start: int = 1, rows: int = 20):
         """
         A leaderboard to be returned via discord message
 
@@ -14,6 +14,9 @@ class Leaderboard():
         """
         self.data = []
         rowLength = len(columnNames)
+
+        startIndex = start-1
+        endIndex = min(startIndex + rows, len(data))
         
         lastRowValue = -1
         rowPlace = 0

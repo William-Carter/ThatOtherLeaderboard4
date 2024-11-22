@@ -80,12 +80,9 @@ class Leaderboard(interactions.Extension):
             dbData = database.leaderboards.getLeaderboard(self.bot.db, categoryObj.id)
 
         # Limit number of rows shown
-        rows = 20
-        startIndex = start-1
-        endIndex = min(startIndex + rows, len(dbData))
 
         formatted = [[x[0], UI.durations.formatted(x[1])] for x in dbData]
-        lb = UI.leaderboards.Leaderboard(["Runner", "Time"], formatted, 1, startIndex, endIndex)
+        lb = UI.leaderboards.Leaderboard(["Runner", "Time"], formatted, 1, start)
         
         response = header + lb.getDiscordFormattedMessage()
         await ctx.send(response)
