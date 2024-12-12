@@ -42,7 +42,7 @@ class SubmitFor(interactions.Extension):
     async def submitfor(self, ctx: interactions.SlashContext, username: str, category: str, time: str, date: str = None):
         userObj = User.userFromName(self.bot.db, username)
         if userObj == None:
-            ctx.send(f"No user with name {username}")
+            await ctx.send(f"No user with name {username}")
             return
         
         # Logic moved to separate file for reuse in moderator commands

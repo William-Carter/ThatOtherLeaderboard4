@@ -23,7 +23,7 @@ class SetName(interactions.Extension):
     async def setname(self, ctx: interactions.SlashContext, name: str):
         userObj = User.userFromDiscordId(self.bot.db, ctx.author.id)
         if userObj == None:
-            ctx.send("User is not registered!")
+            await ctx.send("User is not registered!")
             return
         
         

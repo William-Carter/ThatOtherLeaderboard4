@@ -30,7 +30,7 @@ class SetNameFor(interactions.Extension):
     async def setnamefor(self, ctx: interactions.SlashContext, username: str, newName: str):
         userObj = User.userFromName(self.bot.db, username)
         if userObj == None:
-            ctx.send(f"No user with name {username}")
+            await ctx.send(f"No user with name {username}")
             return
         
         await commandlogic.SetName.updateName(self, ctx, userObj, newName)

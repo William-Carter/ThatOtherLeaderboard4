@@ -36,7 +36,7 @@ class Submit(interactions.Extension):
 
         userObj = database.models.User.userFromDiscordId(self.bot.db, ctx.author.id)
         if userObj == None:
-            ctx.send("User is not registered!")
+            await ctx.send("User is not registered!")
             return
         
         # Logic moved to separate file for reuse in moderator commands

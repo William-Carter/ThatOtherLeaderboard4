@@ -29,7 +29,7 @@ class UpdateSegments(interactions.Extension):
 
         userObj = database.models.User.userFromDiscordId(self.bot.db, ctx.author.id)
         if userObj == None:
-            ctx.send("User is not registered!")
+            await ctx.send("User is not registered!")
             return
         
         await commandlogic.UpdateSegments.UpdateSegments(self, ctx, userObj, category, times)

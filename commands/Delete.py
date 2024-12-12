@@ -16,14 +16,14 @@ class Delete(interactions.Extension):
     @interactions.slash_option(
         name="runid",
         argument_name="runId",
-        description="The ID of the run you want to delete (use /list to find it)",
+        description="The ID of the run you want to delete (use /listruns to find it)",
         required=True,
         opt_type=interactions.OptionType.INTEGER
     )
     @interactions.slash_option(
         name="code",
         argument_name="confirmNumber",
-        description="The run deletion confirmation number",
+        description="The run deletion confirmation code",
         required=False,
         opt_type=interactions.OptionType.STRING
     )
