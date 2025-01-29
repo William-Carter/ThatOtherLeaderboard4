@@ -172,7 +172,7 @@ class User:
         return [[Map.map(self.db, segment['map']), segment['time']] for segment in r]
     
 
-    def getAllRuns(self, category: Category.Category = None) -> list[FullGameRun.FullGameRun]:
+    def getAllRunsButSlow(self, category: Category.Category = None) -> list[FullGameRun.FullGameRun]:
         if not category == None:
             catFilter = f"""WHERE category = "{category.id}" """
         else:

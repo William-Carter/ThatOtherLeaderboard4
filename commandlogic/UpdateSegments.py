@@ -36,7 +36,7 @@ async def UpdateSegments(command: interactions.Extension, ctx: interactions.Slas
     identifiedRun = None
     if runId == -1:
         # Iterate through every run on record for this user in this category to find one with a matching final time
-        runs = userObj.getAllRuns(categoryObj)
+        runs = userObj.getAllRunsButSlow(categoryObj)
         for run in runs:
             if run.time == inputTotal:
                 identifiedRun = run

@@ -1,10 +1,13 @@
 import interactions
-import database.models.User
+
 import database.models.Gold
-import database.models.Category
+
 import UI.durations
 import UI.neatTables
 import database.sprm
+from database.models import FullGameRun
+from database.models import User
+from database.models import Category
 
 class Segments(interactions.Extension):
     @interactions.slash_command(
@@ -31,7 +34,32 @@ class Segments(interactions.Extension):
 
 
     async def segmentsForPb(self, ctx: interactions.SlashContext, category: str, username: str = None):
-        await ctx.send("Segments for PB")
+        if username:
+            userObj = User.userFromName(self.bot.db, username)
+        else:
+            userObj = User.userFromDiscordId(self.bot.db, ctx.author.id)
+                 
+        if userObj == None:
+            await ctx.send(f"No user with name {username}")
+            return
+        
+        categoryObj = Category.categoryFromName(self.bot.db, category)
+        if categoryObj == None:
+            await ctx.send("Invalid category!")
+            return
+        
+        run = userObj.getPersonalBest(categoryObj)
+        if run == None:
+            await ctx.send("User has no personal best in that category!")
+            return
+        
+        segments = run.getSegments()
+        if segments == None:
+            await ctx.send("Run doesn't have any recorded segment times!")
+            return
+        
+        await ctx.send(self.generateSegmentView(segments, run.time))
+
 
 
     @interactions.slash_command(
@@ -48,7 +76,25 @@ class Segments(interactions.Extension):
         opt_type=interactions.OptionType.INTEGER
     )
     async def segmentsForId(self, ctx: interactions.SlashContext, runId: int):
-        await ctx.send("Segments for ID")
+        run = FullGameRun.fullGameRunFromId(self.bot.db, runId)
+        if run == None:
+            await ctx.send("No run with that ID!")
+            return
+        
+        segments = run.getSegments()
+        if segments == None:
+            await ctx.send("Run doesn't have any recorded segment times!")
+            return
+        
+        await ctx.send(self.generateSegmentView(segments, run.time))
+        
+    def generateSegmentView(self, mapTimes: list[list], runDuration: float) -> str:
+        tableData = [["Map", "Time"]]
+        for entry in mapTimes:
+            tableData.append([entry[0].name, UI.durations.formatted(entry[1])])
+
+        return "```"  +UI.neatTables.generateTable(tableData) + f"\nFinal Time: {UI.durations.formatted(runDuration)}```"
+        
         
 
 

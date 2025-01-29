@@ -2,6 +2,7 @@ from database.Interface import Interface
 from database.models.Category import Category
 from database.models.Country import Country
 from database.models.Continent import Continent
+from database.models import Map
 class FullGameRun:
     def __init__(self, db: Interface, id: int, userId: int, time: float, date: str, categories: list[Category]):
         self.db = db
@@ -65,6 +66,28 @@ class FullGameRun:
         """, (category.id, continent.id, self.id))
 
         return rank[0]['calculatedRank']
+    
+    def getSegments(self) -> list[list[Map.Map, float]]:
+        segments = self.db.executeQuery("""
+                                        SELECT map, time 
+                                        FROM RunSegments
+                                        LEFT JOIN Maps ON RunSegments.map = Maps.id 
+                                        WHERE run = ?
+                                        ORDER BY Maps.mapOrder ASC
+
+                                        """, (self.id,))
+
+
+        if len(segments) == 0:
+            return None
+
+        mapTimes = [] 
+        for segment in segments:
+            map = Map.map(self.db, segment["map"])
+            time = segment["time"]
+            mapTimes.append([map, time])
+
+        return mapTimes
 
 
 def fullGameRunFromId(db: Interface, id: int) -> FullGameRun:
