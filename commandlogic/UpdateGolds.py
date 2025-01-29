@@ -5,7 +5,7 @@ from database.models import Category
 from database.models import User
 from database.models import Map
 from database import Maps
-from database import MapTimes
+from database import Segments
 from database import Golds
 
 

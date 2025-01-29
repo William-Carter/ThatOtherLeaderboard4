@@ -170,9 +170,32 @@ class User:
             return None
 
         return [[Map.map(self.db, segment['map']), segment['time']] for segment in r]
+    
 
+    def getAllRuns(self, category: Category.Category = None) -> list[FullGameRun.FullGameRun]:
+        if not category == None:
+            catFilter = f"""WHERE category = "{category.id}" """
+        else:
+            catFilter = ""
 
+        r = self.db.executeQuery(
+            """
+            SELECT id, time, category
+            FROM (
+                SELECT r.id, r.time, rc.category
+                FROM FullGameRunCategories rc
+                LEFT JOIN FullGameRuns r ON rc.run = r.id
+                WHERE r.user = ?
+                )
+            
+            """+catFilter+"\nORDER BY time ASC", (self.id,))
+        
 
+        runs = []
+        for row in r:
+            runs.append(FullGameRun.fullGameRunFromId(self.db, row['id']))
+
+        return runs
 
 
 def userFromId(db: Interface, id: int) -> User:
