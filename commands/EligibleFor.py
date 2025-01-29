@@ -3,12 +3,22 @@ import commandlogic.Eligible
 import database.models.User
 import commandlogic
 
-class Eligible(interactions.Extension):
+class EligibleFor(interactions.Extension):
     @interactions.slash_command(
-        name="eligible",
-        description="Toggle whether a gold is eligible to be on the community gold leaderboard",
+        name="eligiblefor",
+        description="Toggle whether someone else's gold is eligible to be on the community gold leaderboard",
         scopes=[1081155162065862697]
     )
+
+
+    @interactions.slash_option(
+        name="user",
+        argument_name="username",
+        description="Who to submit on behalf of",
+        required=True,
+        opt_type=interactions.OptionType.STRING
+    )
+
 
     @interactions.slash_option(
         name="category",
@@ -17,6 +27,7 @@ class Eligible(interactions.Extension):
         required=True,
         opt_type=interactions.OptionType.STRING
     )
+    
     @interactions.slash_option(
         name="map",
         argument_name="map",
@@ -26,10 +37,10 @@ class Eligible(interactions.Extension):
     )
 
 
-    async def eligible(self, ctx: interactions.SlashContext, category: str, map: str):
-        userObj = database.models.User.userFromDiscordId(self.bot.db, ctx.author.id)
+    async def eligiblefor(self, ctx: interactions.SlashContext, username: str, category: str, map: str):
+        userObj = database.models.User.userFromName(self.bot.db, username)
         if userObj == None:
-            ctx.send("User is not registered!")
+            ctx.send(f"No user with name {username}")
             return
         
         await commandlogic.Eligible.Eligible(self, ctx, userObj, category, map)

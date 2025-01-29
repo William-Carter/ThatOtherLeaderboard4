@@ -5,7 +5,7 @@ from database.Interface import Interface
 
 dirPath = os.path.dirname(os.path.realpath(__file__))
 
-bot = interactions.Client(intents=interactions.Intents.DEFAULT | interactions.Intents.GUILD_MEMBERS, send_command_tracebacks=False, fetch_members=True)
+bot = interactions.Client(intents=interactions.Intents.DEFAULT | interactions.Intents.GUILD_MEMBERS, send_command_tracebacks=False, fetch_members=False)
 
 bot.db = Interface(dirPath+"/ThatOtherLeaderboard.db")
 

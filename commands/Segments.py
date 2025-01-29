@@ -9,12 +9,14 @@ import database.sprm
 class Segments(interactions.Extension):
     @interactions.slash_command(
         name="segments",
-        description="See a user's PB segments",
+        description="See the segment times for a run",
+        sub_cmd_name="pb",
+        sub_cmd_description="See the segment times for someone's current PB"
     )
     @interactions.slash_option(
         name="category",
         argument_name="category",
-        description="What category to ",
+        description="The category of the run. Will use the fastest qualifying run.",
         required=True,
         opt_type=interactions.OptionType.STRING
     )
@@ -27,43 +29,26 @@ class Segments(interactions.Extension):
         opt_type=interactions.OptionType.STRING
     )
 
-    async def segments(self, ctx: interactions.SlashContext, category: str, username: str = None):
-        if username:
-            userObj = database.models.User.userFromName(self.bot.db, username.lower())
-            if userObj == None:
-                await ctx.send(f"No user with name {username}")
-                return
 
-        else:
-            userObj = database.models.User.userFromDiscordId(self.bot.db, ctx.author.id)
-            if userObj == None:
-                await ctx.send(f"User is not registered!")
-                return
-            
+    async def segmentsForPb(self, ctx: interactions.SlashContext, category: str, username: str = None):
+        await ctx.send("Segments for PB")
 
-        categoryObj = database.models.Category.categoryFromName(self.bot.db, category.lower())
 
-        if categoryObj == None:
-            await ctx.send(f"{category.title()} is not a valid category!")
-            return
-            
-
-        segments = userObj.getPbSegments(categoryObj)
-        if segments == None:
-            await ctx.send("User has no recorded PB segments")
-
-        tableData = [["Map", "Time"]]
-        total = 0
-        for row in segments:
-            total += row[1]
-            tableData.append([row[0].name, UI.durations.formatted(row[1])])
-
-        tableData += [["", ""], ["Total", UI.durations.formatted(total)]]
-
-        output = f"```\n{categoryObj.name.title()} PB Segments for {userObj.name}:\n"
-        output += UI.neatTables.generateTable(tableData)
-        output += "```"
-
-        await ctx.send(output)
+    @interactions.slash_command(
+        name="segments",
+        description="See the segment times for a run",
+        sub_cmd_name="id",
+        sub_cmd_description="See the segment times for a run based on its id"
+    )
+    @interactions.slash_option(
+        name="id",
+        argument_name="runId",
+        description="The ID of the run",
+        required=True,
+        opt_type=interactions.OptionType.INTEGER
+    )
+    async def segmentsForId(self, ctx: interactions.SlashContext, runId: int):
+        await ctx.send("Segments for ID")
+        
 
 

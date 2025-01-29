@@ -18,7 +18,7 @@ async def Updategolds(command: interactions.Extension, ctx: interactions.SlashCo
     maps = Maps.getMainLevels(command.bot.db)
 
     timeList = times.strip().split(" ")
-    if len(timeList) != 18:
+    if len(timeList) != len(maps):
         await ctx.send("Incorrect number of times given!")
         return
     
@@ -34,14 +34,14 @@ async def Updategolds(command: interactions.Extension, ctx: interactions.SlashCo
         
     oldSob = userObj.getSumOfBest(categoryObj)
     oldComgolds = Golds.getCommunityGolds(command.bot.db, categoryObj)
-    MapTimes.upsertMapTimes(command.bot.db, userObj, "gold", categoryObj, timeNums)
+    Golds.upsertGolds(command.bot.db, userObj, categoryObj, timeNums)
     newSob = sum([x[1] for x in timeNums])
     newComgolds = Golds.getCommunityGolds(command.bot.db, categoryObj)
     difference = round(oldSob-newSob, 3)
 
     newSobFormatted = UI.durations.formatted(newSob)
 
-    await ctx.send(f"```ansi\nUpdated golds! Your new sum of best is {newSobFormatted} ({UI.differences.colourDifference(difference)})!```")
+    await ctx.send(f"```ansi\nUpdated golds! New sum of best is {newSobFormatted} ({UI.differences.colourDifference(difference)})!```")
     await activityFeed(command, userObj, categoryObj, oldComgolds, newComgolds)
 
     

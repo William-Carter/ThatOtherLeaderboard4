@@ -20,13 +20,12 @@ class Gold:
             SELECT calculatedRank
             FROM (
                 SELECT mt.user, MIN(mt.time), RANK() OVER (ORDER BY MIN(mt.time) ASC) AS calculatedRank
-                FROM MapTimes mt
+                FROM Golds mt
                 LEFT JOIN CommunityGoldEligibility cge
                 ON cge.user = mt.user
                 AND cge.category = mt.category
                 AND cge.map = mt.map
-                WHERE mt.type = "gold"
-                AND mt.category = ?
+                WHERE mt.category = ?
                 AND mt.map = ?
                 AND cge.eligible = 1
                 GROUP BY mt.user

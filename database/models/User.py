@@ -124,16 +124,15 @@ class User:
     def getGolds(self, category: Category.Category) -> list[Gold.Gold]:
         r = self.db.executeQuery(
             """
-            SELECT MapTimes.map, MapTimes.time, cge.eligible
-            FROM MapTimes
-            LEFT JOIN Maps ON MapTimes.map = Maps.id
+            SELECT Golds.map, Golds.time, cge.eligible
+            FROM Golds
+            LEFT JOIN Maps ON Golds.map = Maps.id
             LEFT JOIN CommunityGoldEligibility cge
-            ON cge.user = MapTimes.user
-            AND cge.category = MapTimes.category
-            AND cge.map = MapTimes.map
-            WHERE MapTimes.user = ?
-            AND type = "gold"
-            AND MapTimes.category = ?
+            ON cge.user = Golds.user
+            AND cge.category = Golds.category
+            AND cge.map = Golds.map
+            WHERE Golds.user = ?
+            AND Golds.category = ?
             ORDER BY Maps.mapOrder
             """,
             (self.id, category.id)

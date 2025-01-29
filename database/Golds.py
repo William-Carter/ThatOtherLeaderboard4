@@ -18,23 +18,26 @@ def getCommunityGolds(db: Interface, category: Category.Category) -> list:
     r = db.executeQuery(
         """
         SELECT mt.map, mt.user, mt.time
-        FROM MapTimes mt
+        FROM Golds mt
         JOIN (
             SELECT smt.category, smt.map, MIN(smt.time) AS cgold
-            FROM MapTimes smt
+            FROM Golds smt
             LEFT JOIN CommunityGoldEligibility scge
             ON smt.user = scge.user
             AND smt.category = scge.category
             AND smt.map = scge.map
             WHERE scge.eligible = 1
             AND smt.category = ?
-            AND smt.type = "gold"
             GROUP BY smt.map
             ) AS m ON m.category = mt.category AND m.cgold = mt.time AND m.map = mt.map
+        LEFT JOIN Maps ON Maps.id = mt.map
+        LEFT JOIN CommunityGoldEligibility cge
+        ON mt.user = cge.user
+        AND mt.map = cge.map
+        AND mt.category = cge.category
 
-        LEFT JOIN Maps
-        ON Maps.id = mt.map
         WHERE mt.category = ?
+        AND cge.eligible = 1
         ORDER BY Maps.mapOrder
         """, (category.id, category.id))
     
@@ -58,11 +61,10 @@ def getCommunityGolds(db: Interface, category: Category.Category) -> list:
 def getSumOfBestLeaderboard(db: Interface, category: Category.Category) -> list:
     r = db.executeQuery(
         """
-        SELECT Users.id, SUM(MapTimes.time) as sob
-        FROM MapTimes
-        LEFT JOIN Users ON MapTimes.user = Users.id
-        WHERE MapTimes.category = ?
-        AND MapTimes.type = "gold"
+        SELECT Users.id, SUM(Golds.time) as sob
+        FROM Golds
+        LEFT JOIN Users ON Golds.user = Users.id
+        WHERE Golds.category = ?
         GROUP BY Users.id
         ORDER BY sob
         """, (category.id,))
@@ -84,15 +86,56 @@ def getGoldLeaderboard(db: Interface, category: Category.Category, map: Map.Map)
     """
     r = db.executeQuery(
         """
-        SELECT Users.id, MapTimes.time as sob
-        FROM MapTimes
-        LEFT JOIN Users ON MapTimes.user = Users.id
-        WHERE MapTimes.category = ?
-        AND MapTimes.map = ?
-        AND MapTimes.type = "gold"
+        SELECT Users.id, Golds.time as sob
+        FROM Golds
+        LEFT JOIN Users ON Golds.user = Users.id
+        WHERE Golds.category = ?
+        AND Golds.map = ?
         GROUP BY Users.id
         ORDER BY sob
         """, (category.id, map.id))
     
     goldList = [[User.userFromId(db, sob['id']), sob['sob']] for sob in r]
     return goldList
+
+def getDefaultEligibility(db: Interface, map: Map.Map, category: Category.Category) -> int:
+    r = db.executeQuery("""
+                        SELECT eligible
+                        FROM DefaultCommunityGoldEligiblity
+                        WHERE category = ?
+                        AND map = ?
+                        """, (category.id, map.id))[0]
+    
+    return r["eligible"]
+    
+
+
+
+def upsertGolds(db: Interface, user: User.User, category: Category.Category, mapTimes: list[list[Map.Map|float]]):
+    for mapTime in mapTimes:
+        db.insertAndFetchRowID(
+            """
+            INSERT OR IGNORE INTO Golds (user, category, map, time)
+            VALUES (?, ?, ?, ?)
+            """,
+            (user.id, category.id, mapTime[0].id, mapTime[1])
+        )
+
+        db.insertAndFetchRowID(
+            """
+            INSERT OR IGNORE INTO CommunityGoldEligibility (user, category, map, eligible)
+            VALUES (?, ?, ?, ?)
+            """,
+            (user.id, category.id, mapTime[0].id, getDefaultEligibility(db, mapTime[0], category))
+        )
+
+        db.insertAndFetchRowID(
+            """
+            UPDATE Golds
+            SET time = ?
+            WHERE user = ?
+            AND category = ?
+            AND map = ?
+            """,
+            (mapTime[1], user.id, category.id, mapTime[0].id)
+        )

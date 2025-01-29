@@ -126,3 +126,19 @@ def getAverageRank(db: Interface, user: User.User):
             return [ar['avgRank'], ar['placement']]
         
     return None
+
+
+def getWorldRecords(db: Interface, includeExtensions: bool = False):
+    r = db.executeQuery(
+        """
+        SELECT fgc.id, Users.id, MIN(fgr.time) AS record
+        FROM FullGameRunCategories fgrc
+        LEFT JOIN FullGameRuns fgr ON fgrc.run = fgr.id
+        LEFT JOIN FullGameCategories fgc ON fgrc.category = fgc.id
+        LEFT JOIN Users ON fgr.user = Users.id
+        WHERE fgc.isExtension = ?
+        GROUP BY fgc.id
+        """, (includeExtensions,))
+    
+    
+    

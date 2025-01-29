@@ -133,18 +133,30 @@ def construct(dbPath: str) -> None:
     """)
 
     cursor.execute("""
-    CREATE TABLE "MapTimes" (
+    CREATE TABLE "Golds" (
 	"user"	INTEGER,
-	"type"	TEXT,
     "category" TEXT,
 	"map"	TEXT,
 	"time"	REAL,
-	PRIMARY KEY("user","type", "category", "map"),
+	PRIMARY KEY("user", "category", "map"),
 	FOREIGN KEY("map") REFERENCES "Maps"("id"),
 	FOREIGN KEY("user") REFERENCES "Users"("id")
     FOREIGN KEY("category") REFERENCES "FullGameCategories"("id")
     )
     """)
+    
+    cursor.execute("""
+	CREATE TABLE "DefaultCommunityGoldEligiblity" (
+    "category" TEXT,
+    "map" TEXT,
+    "eligible" INTEGER NOT NULL,
+    PRIMARY KEY("category", "map"),
+    FOREIGN KEY("category") REFERENCES "FullGameCategories"("id"),
+    FOREIGN KEY("map") REFERENCES "Maps"("id")
+    )
+
+
+	""")
     
     cursor.execute("""
 	CREATE TABLE "CommunityGoldEligibility" (
@@ -182,6 +194,17 @@ def construct(dbPath: str) -> None:
 	PRIMARY KEY("run","category")
     )
     """)
+    
+    cursor.execute("""
+	CREATE TABLE "RunSegments" (
+    "run" INTEGER,
+	"map" TEXT,
+	"time" REAL,
+	PRIMARY KEY("run", "map"),
+    FOREIGN KEY("run") REFERENCES "FullGameRuns"("id"),
+	FOREIGN KEY("map") REFERENCES "Maps"("id")
+	)
+	""")
 
     cursor.execute("""
 	CREATE TABLE "IndividualLevelRuns" (
