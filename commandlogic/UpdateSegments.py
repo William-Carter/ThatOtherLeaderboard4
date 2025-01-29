@@ -33,6 +33,7 @@ async def UpdateSegments(command: interactions.Extension, ctx: interactions.Slas
         inputTotal += timeNum
         mapTimes.append([maps[index], timeNum])
 
+    inputTotal = round(inputTotal, 3)
     identifiedRun = None
     if runId == -1:
         # Iterate through every run on record for this user in this category to find one with a matching final time
