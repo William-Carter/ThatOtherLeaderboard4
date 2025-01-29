@@ -58,7 +58,7 @@ class Segments(interactions.Extension):
             await ctx.send("Run doesn't have any recorded segment times!")
             return
         
-        await ctx.send(self.generateSegmentView(segments, run.time))
+        await ctx.send(self.generateSegmentView(segments, run))
 
 
 
@@ -86,14 +86,16 @@ class Segments(interactions.Extension):
             await ctx.send("Run doesn't have any recorded segment times!")
             return
         
-        await ctx.send(self.generateSegmentView(segments, run.time))
+        await ctx.send(self.generateSegmentView(segments, run))
         
-    def generateSegmentView(self, mapTimes: list[list], runDuration: float) -> str:
+    def generateSegmentView(self, mapTimes: list[list], run: FullGameRun.FullGameRun) -> str:
+        finalTime = UI.durations.formatted(run.time)
+        userObj = User.userFromId(self.bot.db, run.userId)
         tableData = [["Map", "Time"]]
         for entry in mapTimes:
             tableData.append([entry[0].name, UI.durations.formatted(entry[1])])
 
-        return "```"  +UI.neatTables.generateTable(tableData) + f"\nFinal Time: {UI.durations.formatted(runDuration)}```"
+        return f"```\nSegments for a Run of {finalTime} by {userObj.name}\n" + UI.neatTables.generateTable(tableData) + f"\nFinal Time: {finalTime}```"
         
         
 
