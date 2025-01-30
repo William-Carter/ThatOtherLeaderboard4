@@ -4,6 +4,8 @@ from database.models import FullGameRun
 from database.models import Category
 from database.models import Map
 from database.models import Gold
+from database.models import SetupElement
+from database.models import UserSetup
 from database import Maps
 class User:
     def __init__(self, db: Interface, id: int, name: str, srcId: str, discordId: str, countryId: str):
@@ -196,6 +198,34 @@ class User:
             runs.append(FullGameRun.fullGameRunFromId(self.db, row['id']))
 
         return runs
+    
+
+    def getUserSetup(self) -> list[UserSetup.UserSetup]:
+        """
+        Fetch a user's recorded setup information
+
+        Returns:
+            None if the user has no recorded information
+
+            Otherwise, a list of UserSetup objects
+        """
+        r = self.db.executeQuery(
+            """
+            SELECT user, element, value
+            FROM UserSetups
+            WHERE user = ?
+            """, (self.id,))
+        
+        if len(r) == 0:
+            return None
+        
+        userSetupElements = []
+        for row in r:
+            element = SetupElement.setupElementFromId(self.db, row["element"])
+            userSetupElement = UserSetup.UserSetup(self, element, row["value"])
+            userSetupElements.append(userSetupElement)
+
+        return userSetupElements
 
 
 def userFromId(db: Interface, id: int) -> User:

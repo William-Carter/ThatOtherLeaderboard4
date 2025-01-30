@@ -231,15 +231,35 @@ def construct(dbPath: str) -> None:
     """)
     
     cursor.execute("""
-    CREATE TABLE "sprmValues" (
+    CREATE TABLE "SprmValues" (
 	"category"	TEXT,
 	"a"	REAL NOT NULL,
 	"b"	REAL NOT NULL,
 	"c"	REAL NOT NULL,
 	FOREIGN KEY("category") REFERENCES "FullGameCategories"("id"),
 	PRIMARY KEY("category")
-)
+	)
     """)
+    
+    cursor.execute("""
+	CREATE TABLE "SetupElements" (
+		"id" TEXT,
+        "name" TEXT NOT NULL UNIQUE,
+        "type" TEXT NOT NULL,
+        PRIMARY KEY("id")
+    )
+    """)
+    
+    cursor.execute("""
+	CREATE TABLE "UserSetups" (
+                   "user" INTEGER NOT NULL,
+                   "element" TEXT NOT NULL,
+                   "value" TEXT NOT NULL,
+                   FOREIGN KEY("user") REFERENCES "Users"("id"),
+                   FOREIGN KEY("element") REFERENCES "SetupElements"("id"),
+                   PRIMARY KEY("user", "element")
+    )
+	""")
 
 
 if __name__ == "__main__":
