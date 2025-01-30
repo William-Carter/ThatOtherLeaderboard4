@@ -30,6 +30,20 @@ class User:
         
         self.name = newName
 
+    def updateNationality(self, newNationality: Country.Country):
+        """
+        Update the user's country in the database
+        """
+
+        r = self.db.insertAndFetchRowID(
+            """
+            UPDATE Users
+            SET representing = ?
+            WHERE id = ?
+            """, (newNationality.id, self.id))
+        
+        self.country = newNationality
+
 
     def getPersonalBests(self) -> dict[Category.Category: FullGameRun.FullGameRun]:
         """
