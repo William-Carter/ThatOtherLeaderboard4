@@ -1,5 +1,9 @@
 from database.Interface import Interface
 from database.models import User
+from database.models import Category
+from database.models import FullGameRun
+from database.models import Country
+from database.models import Continent
 def getLeaderboard(db: Interface, category: str) -> list[list[str]]:
     """
     Gets the fullgame leaderboard for a given category
@@ -128,17 +132,78 @@ def getAverageRank(db: Interface, user: User.User):
     return None
 
 
-def getWorldRecords(db: Interface, includeExtensions: bool = False):
+def getWorldRecords(db: Interface, includeExtensions: bool = False) -> dict[Category.Category: FullGameRun.FullGameRun]:
     r = db.executeQuery(
         """
-        SELECT fgc.id, Users.id, MIN(fgr.time) AS record
+        SELECT fgc.id AS category, fgr.id AS runId, MIN(fgr.time) AS record
         FROM FullGameRunCategories fgrc
         LEFT JOIN FullGameRuns fgr ON fgrc.run = fgr.id
         LEFT JOIN FullGameCategories fgc ON fgrc.category = fgc.id
         LEFT JOIN Users ON fgr.user = Users.id
-        WHERE fgc.isExtension = ?
+        WHERE fgc.isExtension <= ?
         GROUP BY fgc.id
         """, (includeExtensions,))
     
+    if len(r) == 0:
+        return None
+    
+    records = {}
+    for record in r:
+        category = Category.category(db, record["category"])
+        run = FullGameRun.fullGameRunFromId(db, record["runId"])
+        records[category] = run
+
+    return records
+
+
+def getCountryRecords(db: Interface, country: Country.Country, includeExtensions: bool = False) -> dict[Category.Category: FullGameRun.FullGameRun]:
+    r = db.executeQuery(
+        """
+        SELECT fgc.id AS category, fgr.id AS runId, MIN(fgr.time) AS record
+        FROM FullGameRunCategories fgrc
+        LEFT JOIN FullGameRuns fgr ON fgrc.run = fgr.id
+        LEFT JOIN FullGameCategories fgc ON fgrc.category = fgc.id
+        LEFT JOIN Users ON fgr.user = Users.id
+        WHERE fgc.isExtension <= ?
+        AND Users.representing = ?
+        GROUP BY fgc.id
+        """, (includeExtensions, country.id))
+    
+    if len(r) == 0:
+        return None
+    
+    records = {}
+    for record in r:
+        category = Category.category(db, record["category"])
+        run = FullGameRun.fullGameRunFromId(db, record["runId"])
+        records[category] = run
+
+    return records
+
+
+def getContinentRecords(db: Interface, continent: Continent.Continent, includeExtensions: bool = False) -> dict[Category.Category: FullGameRun.FullGameRun]:
+    r = db.executeQuery(
+        """
+        SELECT fgc.id AS category, fgr.id AS runId, MIN(fgr.time) AS record
+        FROM FullGameRunCategories fgrc
+        LEFT JOIN FullGameRuns fgr ON fgrc.run = fgr.id
+        LEFT JOIN FullGameCategories fgc ON fgrc.category = fgc.id
+        LEFT JOIN Users ON fgr.user = Users.id
+        LEFT JOIN Countries ON Users.representing = Countries.id
+        WHERE fgc.isExtension <= ?
+        AND Countries.continent = ?
+        GROUP BY fgc.id
+        """, (includeExtensions, continent.id))
+    
+    if len(r) == 0:
+        return None
+    
+    records = {}
+    for record in r:
+        category = Category.category(db, record["category"])
+        run = FullGameRun.fullGameRunFromId(db, record["runId"])
+        records[category] = run
+
+    return records
     
     
