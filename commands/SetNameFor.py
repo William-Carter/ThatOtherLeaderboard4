@@ -21,7 +21,7 @@ class SetNameFor(interactions.Extension):
     @interactions.slash_option(
         name="name",
         argument_name="newName",
-        description="The name you want to change to",
+        description="The name you want to change them to",
         required=True,
         opt_type=interactions.OptionType.STRING,
         min_length=1,

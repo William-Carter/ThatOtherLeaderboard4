@@ -10,7 +10,7 @@ from database.models import User
 class Records(interactions.Extension):
     @interactions.slash_command(
         name="records",
-        description="See the records for categories",
+        description="See the current records for all categories",
     )
 
     @interactions.slash_option(

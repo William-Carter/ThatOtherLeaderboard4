@@ -13,7 +13,7 @@ class UpdateGolds(interactions.Extension):
     @interactions.slash_option(
         name="category",
         argument_name="category",
-        description="What category to submit a run to",
+        description="What category to update your golds for",
         required=True,
         opt_type=interactions.OptionType.STRING
     )
@@ -21,7 +21,7 @@ class UpdateGolds(interactions.Extension):
     @interactions.slash_option(
         name="times",
         argument_name="times",
-        description="A list of times",
+        description="A list of 18 times",
         required=True,
         opt_type=interactions.OptionType.STRING
     )

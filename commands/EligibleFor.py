@@ -15,7 +15,7 @@ class EligibleFor(interactions.Extension):
     @interactions.slash_option(
         name="user",
         argument_name="username",
-        description="Who to submit on behalf of",
+        description="Whose gold to toggle eligibility for",
         required=True,
         opt_type=interactions.OptionType.STRING
     )

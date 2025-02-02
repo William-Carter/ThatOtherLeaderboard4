@@ -9,13 +9,13 @@ import UI.durations
 class ListRuns(interactions.Extension):
     @interactions.slash_command(
         name="listruns",
-        description="Calculate the SPRM for a given time in a given category",
+        description="List every run on record for a given user",
     )
 
     @interactions.slash_option(
         name="user",
         argument_name="username",
-        description="The user whose runs you want to list, ",
+        description="The user whose runs you want to list, defaults to yourself",
         required=False,
         opt_type=interactions.OptionType.STRING
     )

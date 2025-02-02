@@ -7,7 +7,7 @@ from database import leaderboards
 class ARBoard(interactions.Extension):
     @interactions.slash_command(
         name="arboard",
-        description="See the leaderboard for AMC sums",
+        description="See the leaderboard for average rank",
     )
     @interactions.slash_option(
         name="start",

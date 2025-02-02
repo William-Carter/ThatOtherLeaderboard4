@@ -14,14 +14,14 @@ class Eligible(interactions.Extension):
     @interactions.slash_option(
         name="category",
         argument_name="category",
-        description="The category you want to update",
+        description="The category of the gold you want to update",
         required=True,
         opt_type=interactions.OptionType.STRING
     )
     @interactions.slash_option(
         name="map",
         argument_name="map",
-        description="The map you want to update",
+        description="The map of the gold you want to update",
         required=True,
         opt_type=interactions.OptionType.STRING
     )

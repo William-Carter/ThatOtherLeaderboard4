@@ -9,7 +9,7 @@ class Sweepers(interactions.Extension):
     @interactions.slash_option(
         name="top",
         argument_name="top",
-        description="Top X",
+        description="The placement required in all categories to be included",
         required=True,
         opt_type=interactions.OptionType.INTEGER
     )

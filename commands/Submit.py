@@ -28,7 +28,7 @@ class Submit(interactions.Extension):
     @interactions.slash_option(
         name="date",
         argument_name="date",
-        description="The date your run was performed (defaults to today if left blank)",
+        description="The YYYY-MM-DD date your run was performed (defaults to today if left blank)",
         required=False,
         opt_type=interactions.OptionType.STRING
     )

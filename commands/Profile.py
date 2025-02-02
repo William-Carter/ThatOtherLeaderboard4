@@ -14,7 +14,7 @@ class Profile(interactions.Extension):
     @interactions.slash_option(
         name="user",
         argument_name="username",
-        description="The user whose profile you wish to see",
+        description="The user whose profile you wish to see, defaults to yourself if left blank",
         required=False,
         opt_type=interactions.OptionType.STRING
     )

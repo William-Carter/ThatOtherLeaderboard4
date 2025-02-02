@@ -29,7 +29,7 @@ class UpdateSegmentsFor(interactions.Extension):
     @interactions.slash_option(
         name="times",
         argument_name="times",
-        description="A list of times",
+        description="A list of 18 times",
         required=True,
         opt_type=interactions.OptionType.STRING
     )

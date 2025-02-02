@@ -13,7 +13,7 @@ class Golds(interactions.Extension):
     @interactions.slash_option(
         name="category",
         argument_name="category",
-        description="What category to ",
+        description="What category to see golds for",
         required=True,
         opt_type=interactions.OptionType.STRING
     )

@@ -6,7 +6,7 @@ from database.models import Category
 class WhoHas(interactions.Extension):
     @interactions.slash_command(
         name="whohas",
-        description="Check what a given time would place in a given category",
+        description="See which (and how many) people have a time in a given category",
     )
     @interactions.slash_option(
         name="category",

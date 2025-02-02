@@ -13,7 +13,7 @@ class UpdateSegments(interactions.Extension):
     @interactions.slash_option(
         name="category",
         argument_name="category",
-        description="What category to submit a run to",
+        description="The category of the run you're adding segments for",
         required=True,
         opt_type=interactions.OptionType.STRING
     )
@@ -21,7 +21,7 @@ class UpdateSegments(interactions.Extension):
     @interactions.slash_option(
         name="times",
         argument_name="times",
-        description="A list of times",
+        description="A list of 18 times",
         required=True,
         opt_type=interactions.OptionType.STRING
     )
@@ -29,7 +29,7 @@ class UpdateSegments(interactions.Extension):
     @interactions.slash_option(
         name="runid",
         argument_name="runId",
-        description="The ID of the run you're updating segments for. Will guess the run if left blank.",
+        description="The ID of the run you're updating segments for. Will automatically detect the right run if left blank.",
         required=False,
         opt_type=interactions.OptionType.INTEGER
     )
