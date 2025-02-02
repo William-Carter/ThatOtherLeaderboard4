@@ -98,6 +98,10 @@ def main():
                 """, (name, id, country))
                 print(f"Added new user {name}")
 
+            if userObj.discordId == None: 
+                if userObj.name != name:
+                    userObj.updateName(name)
+
         for run in data["data"]["runs"]:
             runData = run["run"]
             runTime = runData["times"]["primary_t"]
