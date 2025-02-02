@@ -5,7 +5,7 @@ class Trust(interactions.Extension):
     @interactions.slash_command(
         name="trust",
         description="Trust a user",
-        scopes=[1081155162065862697]
+        scopes=[tol.homeGuild]
     )
 
     @interactions.slash_option(

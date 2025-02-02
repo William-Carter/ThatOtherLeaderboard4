@@ -1,4 +1,5 @@
 import interactions
+import tol
 import commandlogic
 import commandlogic.SetName
 from database.models import User
@@ -7,7 +8,7 @@ class SetNameFor(interactions.Extension):
     @interactions.slash_command(
         name="setnamefor",
         description="Update someone else's name on tol",
-        scopes=[1081155162065862697]
+        scopes=[tol.homeGuild]
     )
     @interactions.slash_option(
         name="user",

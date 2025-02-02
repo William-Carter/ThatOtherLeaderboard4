@@ -1,7 +1,4 @@
 import interactions
-
-import database.models.Gold
-
 import UI.durations
 import UI.neatTables
 import database.sprm

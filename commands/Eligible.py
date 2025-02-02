@@ -1,4 +1,5 @@
 import interactions
+import tol
 import commandlogic.Eligible
 import database.models.User
 import commandlogic
@@ -7,7 +8,7 @@ class Eligible(interactions.Extension):
     @interactions.slash_command(
         name="eligible",
         description="Toggle whether a gold is eligible to be on the community gold leaderboard",
-        scopes=[1081155162065862697]
+        scopes=[tol.homeGuild]
     )
 
     @interactions.slash_option(

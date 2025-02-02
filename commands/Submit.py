@@ -1,4 +1,5 @@
 import interactions
+import tol
 import database.models.User
 import commandlogic.Submit
 
@@ -6,7 +7,7 @@ class Submit(interactions.Extension):
     @interactions.slash_command(
         name="submit",
         description="Submit a run to the leaderboard",
-        scopes=[1081155162065862697]
+        scopes=[tol.homeGuild]
     )
 
     @interactions.slash_option(

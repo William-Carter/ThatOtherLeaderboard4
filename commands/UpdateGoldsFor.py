@@ -1,4 +1,5 @@
 import interactions
+import tol
 import commandlogic.UpdateGolds
 from database.models import User
 
@@ -7,7 +8,7 @@ class UpdateGoldsFor(interactions.Extension):
     @interactions.slash_command(
         name="updategoldsfor",
         description="Update someone else's golds for a given category",
-        scopes=[1081155162065862697]
+        scopes=[tol.homeGuild]
     )
 
     @interactions.slash_option(

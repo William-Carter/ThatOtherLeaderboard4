@@ -1,4 +1,5 @@
 import interactions
+import tol
 from database.models import User
 from database.models import Country
 
@@ -6,7 +7,7 @@ class SetCountryFor(interactions.Extension):
     @interactions.slash_command(
         name="setcountryfor",
         description="Update someone else's nationality on tol",
-        scopes=[1081155162065862697]
+        scopes=[tol.homeGuild]
     )
     @interactions.slash_option(
         name="user",

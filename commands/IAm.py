@@ -1,10 +1,12 @@
 import interactions
+import tol
 import discordFunctions.SetName
 from database.models import User
 class IAm(interactions.Extension):
     @interactions.slash_command(
         name="iam",
         description="Link your discord account to a speedrun.com profile",
+        scopes = [tol.homeGuild]
     )
 
     @interactions.slash_option(
