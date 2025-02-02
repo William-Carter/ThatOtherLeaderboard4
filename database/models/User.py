@@ -268,6 +268,18 @@ def userFromDiscordId(db: Interface, discordId: int) -> User:
     
     return User(db, v['id'], v['name'], v['srcId'], v['discordId'], v['representing'])
 
+def userFromSrcId(db: Interface, srcId: str) -> User:
+    v = db.executeQuery("""
+                    SELECT * FROM Users WHERE srcId = ?
+                    """, (srcId,))
+    
+    if len(v) == 0:
+        return None
+    
+    v = v[0]
+    
+    return User(db, v['id'], v['name'], v['srcId'], v['discordId'], v['representing'])
+
 
     
 
