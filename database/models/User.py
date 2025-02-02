@@ -171,21 +171,11 @@ class User:
     
 
     def getPbSegments(self, category: Category.Category) -> list|None:
-        r = self.db.executeQuery(
-            """
-            SELECT Maps.id AS map, MapTimes.time
-            FROM MapTimes
-            LEFT JOIN Maps ON MapTimes.map = Maps.id
-            WHERE MapTimes.category = ?
-            AND Maptimes.user = ?
-            AND MapTimes.type = "segment"
-            ORDER BY Maps.mapOrder
-            """, (category.id, self.id))
-        
-        if len(r) == 0:
+        pb = self.getPersonalBest(category)
+        if pb == None:
             return None
-
-        return [[Map.map(self.db, segment['map']), segment['time']] for segment in r]
+        
+        return pb.getSegments()
     
 
     def getAllRunsButSlow(self, category: Category.Category = None) -> list[FullGameRun.FullGameRun]:

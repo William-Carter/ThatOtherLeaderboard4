@@ -69,7 +69,7 @@ class Profile(interactions.Extension):
         if sprmResult:
             sprmSum, sprmPlacement = sprmResult
 
-        response = f"```ansi\nProfile for {userObj.name}"
+        response = f"```ansi\nProfile for {userObj.name}:"
 
 
         response += "\n"+UI.neatTables.generateTable(data, padding=3)
