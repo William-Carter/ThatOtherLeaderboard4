@@ -29,7 +29,7 @@ class UpdateSegments(interactions.Extension):
     @interactions.slash_option(
         name="runid",
         argument_name="runId",
-        description="The ID of the run you're updating segments for. Will automatically detect the right run if left blank.",
+        description="The ID of the run you're updating segments for.",
         required=False,
         opt_type=interactions.OptionType.INTEGER
     )
