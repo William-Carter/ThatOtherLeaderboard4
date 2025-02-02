@@ -6,7 +6,6 @@ from database.models import Map
 from database.models import Gold
 from database.models import SetupElement
 from database.models import UserSetup
-from database import Maps
 class User:
     def __init__(self, db: Interface, id: int, name: str, srcId: str, discordId: str, countryId: str):
         self.db = db
@@ -43,6 +42,21 @@ class User:
             """, (newNationality.id, self.id))
         
         self.country = newNationality
+
+    def updateDiscordId(self, newDiscordId: str):
+        """
+        Update the user's discordId
+        """
+
+        r = self.db.insertAndFetchRowID(
+            """
+            UPDATE Users
+            SET discordId = ?
+            WHERE id = ?
+            """, (newDiscordId, self.id))
+        
+        self.discordId = newDiscordId
+
 
 
     def getPersonalBests(self) -> dict[Category.Category: FullGameRun.FullGameRun]:
