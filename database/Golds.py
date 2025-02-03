@@ -89,8 +89,13 @@ def getGoldLeaderboard(db: Interface, category: Category.Category, map: Map.Map)
         SELECT Users.id, Golds.time as sob
         FROM Golds
         LEFT JOIN Users ON Golds.user = Users.id
+        LEFT JOIN CommunityGoldEligibility cge
+        ON Golds.map = cge.map
+        AND Golds.category = cge.category
+        AND Golds.user = cge.user
         WHERE Golds.category = ?
         AND Golds.map = ?
+        AND eligible = 1
         GROUP BY Users.id
         ORDER BY sob
         """, (category.id, map.id))
