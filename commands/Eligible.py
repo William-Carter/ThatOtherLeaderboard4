@@ -30,7 +30,7 @@ class Eligible(interactions.Extension):
     async def eligible(self, ctx: interactions.SlashContext, category: str, map: str):
         userObj = database.models.User.userFromDiscordId(self.bot.db, ctx.author.id)
         if userObj == None:
-            ctx.send("User is not registered!")
+            await ctx.send("User is not registered!")
             return
         
         await commandlogic.Eligible.Eligible(self, ctx, userObj, category, map)

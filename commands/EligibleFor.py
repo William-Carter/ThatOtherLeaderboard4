@@ -41,7 +41,7 @@ class EligibleFor(interactions.Extension):
     async def eligiblefor(self, ctx: interactions.SlashContext, username: str, category: str, map: str):
         userObj = database.models.User.userFromName(self.bot.db, username)
         if userObj == None:
-            ctx.send(f"No user with name {username}")
+            await ctx.send(f"No user with name {username}")
             return
         
         await commandlogic.Eligible.Eligible(self, ctx, userObj, category, map)
