@@ -61,5 +61,5 @@ async def activityFeed(command: interactions.Extension, userObj: User.User, cate
 
 
     for update in updates:
-        await command.bot.activityFeed.send("`"+update+"`")
+        await command.bot.activityFeed.send("```"+update+"```")
 

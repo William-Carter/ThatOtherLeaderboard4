@@ -88,4 +88,4 @@ async def activityFeed(command: interactions.Extension, userObj: User, categoryO
         response += f", ranking them {UI.durations.formatLeaderBoardPosition(globalRank)} in the world"
 
 
-    await command.bot.activityFeed.send("`"+response+"`")
+    await command.bot.activityFeed.send("```"+response+"```")
