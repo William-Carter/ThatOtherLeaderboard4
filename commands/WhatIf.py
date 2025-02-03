@@ -49,5 +49,5 @@ class WhatIf(interactions.Extension):
 
         sprmValue = database.sprm.calculateSprm(self.bot.db, categoryObj, timeFloat)
 
-        response = f"A time of {UI.durations.formatted(timeFloat)} would place {UI.durations.formatLeaderBoardPosition(placement)} on the {categoryObj.name} leaderboard and have a SPRM of {sprmValue}"
+        response = f"A time of {UI.durations.formatted(timeFloat)} would place {UI.durations.formatLeaderBoardPosition(placement)} on the {categoryObj.name.title()} leaderboard and have a SPRM of {sprmValue}"
         await ctx.send(response)
