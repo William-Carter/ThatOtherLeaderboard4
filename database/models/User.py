@@ -261,7 +261,7 @@ def userFromId(db: Interface, id: int) -> User:
 def userFromName(db: Interface, name: str) -> User:
     v = db.executeQuery("""
                     SELECT * FROM Users WHERE LOWER(name) = ?
-                    """, (name,))
+                    """, (name.lower(),))
     
     if len(v) == 0:
         return None
