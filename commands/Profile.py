@@ -44,17 +44,27 @@ class Profile(interactions.Extension):
                 run = userPersonalBests[category]
                 
                 sprm = database.sprm.calculateSprm(self.bot.db, category, run.time)
-                globalRank = run.getRankInCategory(category)
-                countryRank = run.getRankInCategoryInCountry(category, userObj.country)
-                continentRank = run.getRankInCategoryInContinent(category, userObj.country.continent)
+                globalRank = UI.durations.formatLeaderBoardPosition(run.getRankInCategory(category), True)
+                if userObj.country:
+                    countryRank = UI.durations.formatLeaderBoardPosition(
+                        run.getRankInCategoryInCountry(category, userObj.country), True
+                        )
+                    
+                    continentRank = UI.durations.formatLeaderBoardPosition(
+                        run.getRankInCategoryInContinent(category, userObj.country.continent), True
+                        )
+                else:
+                    countryRank = ""
+                    continentRank = ""
+
                 
 
                 data.append([category.name.title(), 
                              UI.durations.formatted(run.time),
                              str(int(round(sprm, 0))),
-                             UI.durations.formatLeaderBoardPosition(globalRank, True),
-                             UI.durations.formatLeaderBoardPosition(continentRank, True),
-                             UI.durations.formatLeaderBoardPosition(countryRank, True)
+                             globalRank,
+                             continentRank,
+                             countryRank
                              ])
 
         amcResult = database.AMC.getAmc(self.bot.db, userObj)
