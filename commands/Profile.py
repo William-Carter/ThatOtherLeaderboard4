@@ -92,7 +92,8 @@ class Profile(interactions.Extension):
         if sprmResult:
             response += f"\nOverall SPRM: {int(round(sprmSum, 0))} ({UI.durations.formatLeaderBoardPosition(sprmPlacement, True)})"
 
-        response += f"\n\nRepresenting {userObj.country.name.title()}"
+        if userObj.country:
+            response += f"\n\nRepresenting {userObj.country.name.title()}"
 
         response += "```"
 
