@@ -181,6 +181,9 @@ class User:
     
     def getSumOfBest(self, category: Category.Category) -> float:
         golds = self.getGolds(category)
+        if golds == None:
+            return None
+        
         return round(sum([gold.time for gold in golds]), 3)
     
 

@@ -37,11 +37,15 @@ async def Updategolds(command: interactions.Extension, ctx: interactions.SlashCo
     Golds.upsertGolds(command.bot.db, userObj, categoryObj, timeNums)
     newSob = sum([x[1] for x in timeNums])
     newComgolds = Golds.getCommunityGolds(command.bot.db, categoryObj)
-    difference = round(oldSob-newSob, 3)
-
     newSobFormatted = UI.durations.formatted(newSob)
 
-    await ctx.send(f"```ansi\nUpdated golds! New sum of best is {newSobFormatted} ({UI.differences.colourDifference(difference)})!```")
+    if oldSob:
+        difference = round(oldSob-newSob, 3)
+        deltaString = f" ({UI.differences.colourDifference(difference)})!"
+    else:
+        deltaString = "!"
+
+    await ctx.send(f"```ansi\nUpdated golds! New sum of best is {newSobFormatted}{deltaString}```")
     await activityFeed(command, userObj, categoryObj, oldComgolds, newComgolds)
 
     
