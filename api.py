@@ -97,10 +97,9 @@ def main():
                     VALUES (?, ?, ?)
                 """, (name, id, country))
                 print(f"Added new user {name}")
-
-            if userObj.discordId == None: 
-                if userObj.name != name:
-                    userObj.updateName(name)
+            
+            if userObj and userObj.discordId == None and userObj.name != name:
+                userObj.updateName(name)
 
         for run in data["data"]["runs"]:
             runData = run["run"]
