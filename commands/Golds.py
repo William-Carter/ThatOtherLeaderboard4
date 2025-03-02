@@ -1,9 +1,10 @@
 import interactions
 import database.models.User
 import database.models.Gold
+import database.models.Category
 import UI.durations
 import UI.neatTables
-import database.sprm
+import database.Golds
 
 class Golds(interactions.Extension):
     @interactions.slash_command(
@@ -72,7 +73,8 @@ class Golds(interactions.Extension):
             ])
 
         tableData.append(["", "", ""])
-        tableData.append(["Total", UI.durations.formatted(sumOfBest), ""])
+        sumOfBestRank = database.Golds.getSumOfBestRank(self.bot.db, categoryObj, sumOfBest)
+        tableData.append(["Total", UI.durations.formatted(sumOfBest), UI.durations.formatLeaderBoardPosition(sumOfBestRank, colorCode=True)])
         output += UI.neatTables.generateTable(tableData)
         if ineligibleGold:
             output += "\nGolds without a placement aren't valid for comgold due to differing strats\nUse /eligible to fix any inaccuracies"

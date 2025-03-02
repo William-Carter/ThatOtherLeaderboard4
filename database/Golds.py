@@ -72,6 +72,24 @@ def getSumOfBestLeaderboard(db: Interface, category: Category.Category) -> list:
     sobList = [[User.userFromId(db, sob['id']), sob['sob']] for sob in r]
     return sobList
 
+def getSumOfBestRank(db: Interface, category: Category.Category, sumOfBest: float) -> int:
+    r = db.executeQuery("""
+    SELECT COUNT(id) AS rank
+    FROM (
+        SELECT Users.id, SUM(Golds.time) as sob
+        FROM Golds
+        LEFT JOIN Users ON Golds.user = Users.id
+        WHERE Golds.category = ?
+        GROUP BY Users.id
+        ORDER BY sob
+    )
+    WHERE sob < ?
+    """, (category.id, sumOfBest))
+
+    return r[0]['rank']+1
+
+
+
 
 def getGoldLeaderboard(db: Interface, category: Category.Category, map: Map.Map) -> list:
     """
