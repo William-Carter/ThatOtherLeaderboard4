@@ -56,8 +56,10 @@ class Golds(interactions.Extension):
         output = f"```ansi\n{categoryObj.name.title()} golds for {userObj.name}:\n"
         tableData = [["Map", "Time", "Rank"]]
         ineligibleGold = False
+        sumOfBest = 0
         for gold in golds:
             position = gold.getRank()
+            sumOfBest += gold.time
             if position == -1:
                 rank = ""
                 ineligibleGold = True
@@ -69,6 +71,8 @@ class Golds(interactions.Extension):
                 rank
             ])
 
+        tableData.append(["", "", ""])
+        tableData.append(["Total", UI.durations.formatted(sumOfBest), ""])
         output += UI.neatTables.generateTable(tableData)
         if ineligibleGold:
             output += "\nGolds without a placement aren't valid for comgold due to differing strats\nUse /eligible to fix any inaccuracies"
