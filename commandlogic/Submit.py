@@ -3,6 +3,7 @@ import UI.validations
 import UI.durations
 import database.models
 import database.models.FullGameRun
+import database.sprm
 import database.submissions
 from database.models.User import User
 from database.models import Category
@@ -36,7 +37,6 @@ async def Submit(command: interactions.Extension, ctx: interactions.SlashContext
 
 
     globalRankPriorToSubmission = previousPb.getRankInCategory(categoryObj)
-    sprmPriorToSubmission = int(round(database.sprm.calculateSprm(command.bot.db, categoryObj, previousPb.time), 0))
     # TODO get average rank
 
     run = database.submissions.submitFullGameRun(command.bot.db, userObj, timeNum, date, categoryObj)
@@ -45,10 +45,15 @@ async def Submit(command: interactions.Extension, ctx: interactions.SlashContext
     # List formatted as [name, oldValue, newValue]
     changes.append(["Rank:", 
                     globalRankPriorToSubmission, 
-                    run.getRankInCategory(categoryObj)])
-    changes.append(["SPRM:", 
-                    sprmPriorToSubmission, 
-                    int(round(database.sprm.calculateSprm(command.bot.db, categoryObj, run.time), 0))])
+                    run.getRankInCategory(categoryObj)
+                    ])
+    
+    if not categoryObj.isExtension:
+        sprmPriorToSubmission = int(round(database.sprm.calculateSprm(command.bot.db, categoryObj, previousPb.time), 0))
+        changes.append(["SPRM:", 
+                        sprmPriorToSubmission, 
+                        int(round(database.sprm.calculateSprm(command.bot.db, categoryObj, run.time), 0))
+                        ])
 
     response = f"```ansi\nSubmitted a run of {UI.durations.formatted(run.time)} to {categoryObj.name.title()} for {userObj.name}"
     for change in changes:
