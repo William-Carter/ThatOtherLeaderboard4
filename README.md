@@ -3,6 +3,7 @@
 An alternative leaderboard for Portal speedrunning. Accessed through discord, it mirrors [speedrun.com](https://speedrun.com/Portal) to stay up-to-date, but also tracks runs that haven't been submitted to the official leaderboards.
 
 ![](images/leaderboardErrors.png)
+
 *TOL (left) tracks runs that aren't on the official boards (right)*
 
 TOL also tracks other things, such as gold splits for each user, split times for runs, and user peripheral information.
@@ -10,6 +11,7 @@ TOL also tracks other things, such as gold splits for each user, split times for
 This data opens up a world of additional functionality.
 
 ![](images/segmentComparison.png)
+
 *Comparisons like this are incredibly helpful when looking for places to improve!*
 
 A number of interesting statistics and secondary rankings are also available.
