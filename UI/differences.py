@@ -18,3 +18,20 @@ def colourDifference(diff: float, reverse=False) -> str:
     
     else:
         return green+"-"+formatted+white
+
+
+def bold(text: str) -> str:
+    """
+    Wrap a string in the ANSI formatting code for bold text
+    """
+    bold = "\u001b[1;37m"
+    white = "\u001b[0m"
+    return bold + text + white
+
+def underline(text: str) -> str:
+    """
+    Wrap a string in the ANSI formatting code for underline text
+    """
+    underline = "\u001b[2;37m"
+    white = "\u001b[0m"
+    return underline + text + white

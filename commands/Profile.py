@@ -1,4 +1,5 @@
 import interactions
+import UI.differences
 import database.leaderboards
 import database.models.User
 import UI.durations
@@ -34,7 +35,7 @@ class Profile(interactions.Extension):
 
 
         userPersonalBests = userObj.getPersonalBests()
-        data = [["Category", "Time", "SPRM", "WR", "CR", "NR"]]
+        data = [[UI.differences.underline(header) for header in ["Category", "Time", "SPRM", "WR", "CR", "NR"]]]
         
         profilePbCount = 0
 
@@ -59,7 +60,7 @@ class Profile(interactions.Extension):
 
                 
 
-                data.append([category.name.title(), 
+                data.append([UI.differences.underline(category.name.title()), 
                              UI.durations.formatted(run.time),
                              str(int(round(sprm, 0))),
                              globalRank,
@@ -79,21 +80,21 @@ class Profile(interactions.Extension):
         if sprmResult:
             sprmSum, sprmPlacement = sprmResult
 
-        response = f"```ansi\nProfile for {userObj.name}:"
+        response = f"```ansi\n{UI.differences.underline(f'Profile for {userObj.name}:')}"
 
 
         response += "\n"+UI.neatTables.generateTable(data, padding=3)
 
         if amcResult:
-            response += f"\nAMC Summary:  {UI.durations.formatted(amcTime)} ({UI.durations.formatLeaderBoardPosition(amcRank, True)})"
+            response += f"\n{UI.differences.underline('AMC Summary:')}  {UI.durations.formatted(amcTime)} ({UI.durations.formatLeaderBoardPosition(amcRank, True)})"
         if avgResult:
-            response += f"\nAverage Rank: {avgRank} ({UI.durations.formatLeaderBoardPosition(avgRankRank, True)})"
+            response += f"\n{UI.differences.underline('Average Rank:')} {avgRank} ({UI.durations.formatLeaderBoardPosition(avgRankRank, True)})"
 
         if sprmResult:
-            response += f"\nOverall SPRM: {int(round(sprmSum, 0))} ({UI.durations.formatLeaderBoardPosition(sprmPlacement, True)})"
+            response += f"\n{UI.differences.underline('Overall SPRM:')} {int(round(sprmSum, 0))} ({UI.durations.formatLeaderBoardPosition(sprmPlacement, True)})"
 
         if userObj.country:
-            response += f"\n\nRepresenting {userObj.country.name.title()}"
+            response += UI.differences.underline(f"\n\nRepresenting {userObj.country.name.title()}")
 
         response += "```"
 

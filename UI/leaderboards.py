@@ -1,3 +1,4 @@
+import UI.differences
 import UI.neatTables
 
 class Leaderboard():
@@ -48,6 +49,8 @@ class Leaderboard():
         Returns:
             The code block containing the leaderboard (starting with backticks, ending with backticks)
         """
+
+
         for row in self.data:
             color = ""
             match row[0]:
@@ -57,10 +60,13 @@ class Leaderboard():
                     color = "\u001b[1;34m"
                 case "3":
                     color = "\u001b[1;32m"
+                case _:
+                    color = "\u001b[2;37m"
 
             returnColor = "\u001b[0m"
             row[0] = color+str(row[0])+returnColor
 
+        self.data[0] = [UI.differences.underline(x) for x in self.data[0]]
         output = "```ansi\n"+UI.neatTables.generateTable(self.data, 3)+"```"
         return output
 
