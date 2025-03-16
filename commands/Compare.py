@@ -118,7 +118,12 @@ class Compare(interactions.Extension):
                             return
                         
                         header = f"{userObj.name} Golds"
-                        segments = [[x.map, x.time] for x in userObj.getGolds(categoryObj)]
+                        userGolds = userObj.getGolds(categoryObj)
+                        if userGolds == None:
+                            await ctx.send(f"{userObj.name} has no recorded golds!")
+                            return
+                        
+                        segments = [[x.map, x.time] for x in userGolds]
                         segmentSets.append({"header": header, "segments": segments})
 
                 case "pb":
