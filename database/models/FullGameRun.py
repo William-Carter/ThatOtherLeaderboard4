@@ -4,7 +4,7 @@ from database.models.Country import Country
 from database.models.Continent import Continent
 from database.models import Map
 class FullGameRun:
-    def __init__(self, db: Interface, id: int, userId: int, time: float, date: str, categories: list[Category]):
+    def __init__(self, db: Interface, id: int, userId: int, time: float, date: str, categories: list[str]):
         self.db = db
         self.id = id
         self.userId = userId

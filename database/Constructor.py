@@ -261,6 +261,17 @@ def construct(dbPath: str) -> None:
     )
 	""")
 
+    cursor.execute("""
+    CREATE TABLE "IndividualLevelCategoryActiveMaps" (
+        "category"	TEXT NOT NULL,
+        "map"	TEXT NOT NULL,
+        "active"	INTEGER NOT NULL DEFAULT 1,
+        FOREIGN KEY("category") REFERENCES "IndividualLevelCategories"("id"),
+        FOREIGN KEY("map") REFERENCES "Maps"("id"),
+        PRIMARY KEY("category","map")
+    )
+    """)
+
 
 if __name__ == "__main__":
     construct("v4.db")
