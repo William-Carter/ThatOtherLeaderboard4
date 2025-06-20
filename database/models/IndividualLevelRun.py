@@ -3,7 +3,7 @@ from database.models.IndividualLevelCategory import IndividualLevelCategory
 
 
 class IndividualLevelRun:
-    def __init__(self, db: Interface, id: int, userId: int, time: float, date: str, mapId: str, categories: list[str]):
+    def __init__(self, db: Interface.Interface, id: int, userId: int, time: float, date: str, mapId: str, categories: list[str]):
         self.db = db
         self.id = id
         self.userId = userId
