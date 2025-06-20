@@ -32,7 +32,7 @@ class IndividualLevelRun:
 def individualLevelrun(db: Interface, id: str) -> IndividualLevelRun:
     r = db.executeQuery("""
         SELECT id, user, time, date, map
-        FROM IndividualLevelCategories
+        FROM IndividualLevelRuns
         WHERE id = ?
     """, (id,))
 
@@ -46,7 +46,7 @@ def individualLevelrun(db: Interface, id: str) -> IndividualLevelRun:
         FROM IndividualLevelRunCategories
         WHERE run = ?
         ORDER BY submittedAs DESC
-    """)
+    """, (id,))
 
     categories = [x['category'] for x in r]
 

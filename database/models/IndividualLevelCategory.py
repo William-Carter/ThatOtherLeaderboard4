@@ -34,7 +34,7 @@ def individualLevelCategory(db: Interface, id: str) -> IndividualLevelCategory:
         FROM IndividualLevelCategoryNames
         WHERE category = ?
         ORDER BY isPrimary DESC
-    """)
+    """, (id,))
 
     names = [x['name'] for x in r]
 
