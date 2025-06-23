@@ -33,6 +33,21 @@ def propagatedCategories(db: Interface, baseCategory: Category.Category) -> list
 
     return categories
 
+ 
+def getMainILCategories(db: Interface) -> list[ilc.IndividualLevelCategory]:
+    """
+    Get the list of main individual level categories
+
+    Returns:
+        A list of category objects
+    """
+    categories = []
+    q = db.executeQuery("SELECT id FROM IndividualLevelCategories WHERE isExtension = 0 ORDER BY id")
+    for category in q:
+        categories.append(Category.category(db, category['id']))
+
+    return categories
+
 
 def propagatedILCategories(db: Interface, baseCategory: ilc.IndividualLevelCategory) -> list[ilc.IndividualLevelCategory]:
     """

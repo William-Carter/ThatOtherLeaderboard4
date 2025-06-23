@@ -2,10 +2,14 @@ from database.Interface import Interface
 from database.models import Country
 from database.models import FullGameRun
 from database.models import Category
+from database.models import IndividualLevelRun as ilr
+from database.models import IndividualLevelCategory as ilc
 from database.models import Map
 from database.models import Gold
 from database.models import SetupElement
 from database.models import UserSetup
+from database import categories
+from database import Maps
 class User:
     def __init__(self, db: Interface, id: int, name: str, srcId: str, discordId: str, countryId: str):
         self.db = db
@@ -128,6 +132,57 @@ class User:
             runObjects.append(newRunObject)
 
         return runObjects
+    
+
+    def getILPersonalBests(self) -> dict[ilc.IndividualLevelCategory: dict[Map.Map: ilr.IndividualLevelRun]]:
+        """
+        Gets all of a the user's IL pbs. Alway
+        Returns:
+            A dict in the format {IndividualLevelCategory: {Map: IndividualLevelRun}}. IndividualLevelRun will be None if the user doesn't have a PB
+        """
+        ilCats = categories.getMainILCategories(self.db)
+        ilMaps = Maps.getMainLevels(self.db, True)
+
+        pbs = {}
+        for cat in ilCats:
+            pbs[cat.id] = {}
+            for map in ilMaps:
+                pbs[cat.id][map.id] = -1
+
+
+
+        r = self.db.executeQuery(
+            """
+            SELECT ilr.id, ilr.map, ilrc.category, ilr.id, MIN(ilr.time) as time
+            FROM IndividualLevelRunCategories ilrc
+            LEFT JOIN IndividualLevelRuns ilr ON ilrc.run = ilr.id
+            LEFT JOIN Maps ON ilr.map = Maps.id
+            WHERE ilr.user = ?
+            GROUP BY ilrc.category, ilr.map
+            ORDER BY Maps.mapOrder
+            """, (self.id,)
+        )
+
+        for row in r:
+            pbs[row['category']][row['map']] = row['id']
+
+
+        full = {}
+        for cat in ilCats:
+            full[cat] = {}
+            for map in ilMaps:
+                full[cat][map] = None
+
+
+        for cat in full.keys():
+            for map in full[cat].keys():
+                full[cat][map] = ilr.individualLevelrun(self.db, pbs[cat.id][map.id])
+
+        return full
+
+
+        
+
     
 
     def getMapTimes(self, category: Category.Category, type: str) -> dict[Map.Map: float]:
