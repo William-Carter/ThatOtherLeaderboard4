@@ -31,25 +31,30 @@ async def Submit(command: interactions.Extension, ctx: interactions.SlashContext
     
     previousPb = userObj.getPersonalBest(categoryObj)
 
-    if timeNum >= previousPb.time:
+    if (previousPb != None) and (timeNum >= previousPb.time):
         await ctx.send("An equal or faster time is already tracked!")
         return
 
 
-    globalRankPriorToSubmission = previousPb.getRankInCategory(categoryObj)
-    # TODO get average rank
+    if previousPb != None:
+        globalRankPriorToSubmission = previousPb.getRankInCategory(categoryObj)
+    
 
     run = database.submissions.submitFullGameRun(command.bot.db, userObj, timeNum, date, categoryObj)
 
     changes = []
     # List formatted as [name, oldValue, newValue]
-    changes.append(["Rank:", 
-                    globalRankPriorToSubmission, 
-                    run.getRankInCategory(categoryObj)
-                    ])
+    if previousPb != None:
+        changes.append(["Rank:", 
+                        globalRankPriorToSubmission, 
+                        run.getRankInCategory(categoryObj)
+                        ])
     
     if not categoryObj.isExtension:
-        sprmPriorToSubmission = int(round(database.sprm.calculateSprm(command.bot.db, categoryObj, previousPb.time), 0))
+        if previousPb != None:
+            sprmPriorToSubmission = int(round(database.sprm.calculateSprm(command.bot.db, categoryObj, previousPb.time), 0))
+        else:
+            sprmPriorToSubmission = 0
         changes.append(["SPRM:", 
                         sprmPriorToSubmission, 
                         int(round(database.sprm.calculateSprm(command.bot.db, categoryObj, run.time), 0))
@@ -72,11 +77,11 @@ async def Submit(command: interactions.Extension, ctx: interactions.SlashContext
 
     await ctx.send(response)
 
-    await activityFeed(command, userObj, categoryObj, previousPb, run)
+    await activityFeed(command, userObj, categoryObj, run)
 
 
 
-async def activityFeed(command: interactions.Extension, userObj: User, categoryObj: Category.Category, previousPb: database.models.FullGameRun.FullGameRun, run: database.models.FullGameRun.FullGameRun):
+async def activityFeed(command: interactions.Extension, userObj: User, categoryObj: Category.Category, run: database.models.FullGameRun.FullGameRun):
     response = f"{userObj.name} achieved a time of {UI.durations.formatted(run.time)} in the {categoryObj.name.title()} category"
     globalRank = run.getRankInCategory(categoryObj)
 
