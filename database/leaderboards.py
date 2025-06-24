@@ -207,3 +207,29 @@ def getContinentRecords(db: Interface, continent: Continent.Continent, includeEx
     return records
     
     
+def getSumOfIlsRank(db: Interface, category: Category.Category, time: float, includeAdvanced: bool):
+    mapsTotal = 24 if includeAdvanced else 18
+    r = db.executeQuery(
+        """
+        SELECT COUNT(soils) as rank
+        FROM (
+            SELECT name, SUM(pb) as soils, COUNT(pb) as mapsRun
+            FROM (
+                SELECT Users.id, Users.name, ilrc.category, ilr.map, MIN(time) as pb
+                FROM IndividualLevelRunCategories ilrc
+                LEFT JOIN IndividualLevelRuns ilr ON ilrc.run = ilr.id
+                LEFT JOIN Users ON ilr.user = Users.id
+                LEFT JOIN Maps ON ilr.map = Maps.id
+                WHERE Maps.mapOrder < ?
+                GROUP BY Users.id, ilrc.category, ilr.map
+            )
+            WHERE category = ?
+            GROUP BY id
+        )
+        WHERE mapsRun = ?
+        AND soils < ?
+        """, (mapsTotal, category.id, mapsTotal, round(time, 3))
+    )
+
+    return r[0]['rank']+1
+
