@@ -249,8 +249,10 @@ def getIlPointsLeaderboard(db: Interface, category: Category.Category = None):
             LEFT JOIN IndividualLevelRuns ILR ON ILRC.run = ILR.id
             LEFT JOIN Users ON ILR.user = Users.id
             LEFT JOIN IndividualLevelCategories ILC ON ILRC.category = ILC.id
+            LEFT JOIN IndividualLevelCategoryActiveMaps ILCAM ON ILC.id = ILCAM.category AND ILR.map = ILCAM.map
 
             WHERE ILC.isExtension = 0
+            AND ILCAM.active = 1
             {categorySpecifier}
 
             GROUP BY Users.id, ILRC.category, ILR.map
@@ -263,6 +265,6 @@ def getIlPointsLeaderboard(db: Interface, category: Category.Category = None):
 
     output = []
     for row in r:
-        output.append([User.userFromId(db, row['id']), round(row['total'], 2)])
+        output.append([row['name'], str(int(round(row['total'], 0)))])
 
     return output
