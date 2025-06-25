@@ -27,7 +27,7 @@ class Interface:
         self.cursor = None
 
 
-    def executeQuery(self, query: str, args: list = ()) -> list[dict[str:any]]:
+    def executeQuery(self, query: str, args: tuple = (), customFunctions: list = []) -> list[dict[str:any]]:
         """
         Execute a query, return the results
         
@@ -35,12 +35,18 @@ class Interface:
             query - the query to be executed
             
             args - the arguments to be passed to the query
+
+            customFunctions - any custom functions needed for the query in the format [["function_name", number_of_arguments, function]]
         
         Returns:
             a list of dicts representing rows where the keys for each dict are the column names and the values are the row's values
         """
-
         self.openConnection()
+
+        for function in customFunctions:
+            self.connection.create_function(function[0], function[1], function[2])
+
+
         result = self.cursor.execute(query, args)
         columns = [description[0] for description in result.description]
         values = result.fetchall()

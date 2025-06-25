@@ -4,6 +4,7 @@ from database.models import Category
 from database.models import FullGameRun
 from database.models import Country
 from database.models import Continent
+from database import ilpoints
 def getLeaderboard(db: Interface, category: str) -> list[list[str]]:
     """
     Gets the fullgame leaderboard for a given category
@@ -233,3 +234,35 @@ def getSumOfIlsRank(db: Interface, category: Category.Category, time: float, inc
 
     return r[0]['rank']+1
 
+def getIlPointsLeaderboard(db: Interface, category: Category.Category = None):
+    if category:
+        categorySpecifier = f"AND ILC.id = '{category.id}'"
+    else:
+        categorySpecifier = ""
+
+    r = db.executeQuery(
+        f"""
+        SELECT id, name, SUM(points(placement)) as total
+        FROM (
+            SELECT Users.id AS id, Users.name AS name, ILRC.category, ILR.map, MIN(ILR.time) as fastestRun, RANK() OVER (PARTITION BY ILRC.category, ILR.map ORDER BY ILR.time ASC) as placement
+            FROM IndividualLevelRunCategories ILRC
+            LEFT JOIN IndividualLevelRuns ILR ON ILRC.run = ILR.id
+            LEFT JOIN Users ON ILR.user = Users.id
+            LEFT JOIN IndividualLevelCategories ILC ON ILRC.category = ILC.id
+
+            WHERE ILC.isExtension = 0
+            {categorySpecifier}
+
+            GROUP BY Users.id, ILRC.category, ILR.map
+        )
+        GROUP BY id
+        ORDER BY total DESC
+        """,
+        customFunctions= [["points", 1, ilpoints.points]]
+    )
+
+    output = []
+    for row in r:
+        output.append([User.userFromId(db, row['id']), round(row['total'], 2)])
+
+    return output
