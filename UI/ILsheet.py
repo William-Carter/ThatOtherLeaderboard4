@@ -44,9 +44,8 @@ def generateSheet(headers: list[str], columns: list[list]):
                 fullRow.append(row[0] + " "*(columnFirstElementSizes[index]-len(row[0])) + row[1])
         rows.append(fullRow)
 
-    print(rows)
 
-    print(tabulate.tabulate(rows, headers, tablefmt="simple_grid"))
+    return tabulate.tabulate(rows, headers, tablefmt="rounded_outline")
 
 
 
