@@ -52,7 +52,7 @@ def individualLevelCategoryFromName(db: Interface, name: str) -> IndividualLevel
     if len(r) == 0:
         return None
     
-    return individualLevelCategory(db, r[0]['id'])
+    return individualLevelCategory(db, r[0]['category'])
 
 
     
