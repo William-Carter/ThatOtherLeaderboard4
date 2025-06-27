@@ -65,3 +65,20 @@ def propagatedILCategories(db: Interface, baseCategory: ilc.IndividualLevelCateg
         categories.append(ilc.individualLevelCategory(db, category['pc']))
 
     return categories
+
+
+def toggleILActiveness(db: Interface, mapId: int, categoryId: int) -> bool:
+    oldState = db.executeQuery("SELECT active FROM IndividualLevelCategoryActiveMaps WHERE category = ? AND map = ?", (categoryId, mapId))[0]['active']
+
+    newState = -oldState + 1
+
+    db.insertAndFetchRowID(
+        """
+        UPDATE IndividualLevelCategoryActiveMaps
+        SET active = ?
+        WHERE category = ?
+        AND map = ?
+        """, (newState, categoryId, mapId)
+    )
+
+    return bool(newState)
