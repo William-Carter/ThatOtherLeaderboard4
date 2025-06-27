@@ -4,7 +4,9 @@ from database.models import Category
 from database.models import FullGameRun
 from database.models import Country
 from database.models import Continent
+from database.models import Map
 from database import ilpoints
+
 def getLeaderboard(db: Interface, category: str) -> list[list[str]]:
     """
     Gets the fullgame leaderboard for a given category
@@ -206,6 +208,23 @@ def getContinentRecords(db: Interface, continent: Continent.Continent, includeEx
         records[category] = run
 
     return records
+
+def getIlLeaderboard(db: Interface, category: Category.Category, map: Map.Map) -> list[list[str]]:
+    r = db.executeQuery(
+        """
+        SELECT Users.name as USER, MIN(ilr.time) as TIME, RANK() OVER (ORDER BY ilr.time) AS PLACEMENT, Users.id as USERID
+        FROM IndividualLevelRunCategories ilrc
+        LEFT JOIN IndividualLevelRuns ilr ON ilrc.run = ilr.id
+        LEFT JOIN Users on ilr.user = Users.id
+        WHERE ilrc.category = ?
+        AND ilr.map = ?
+        GROUP BY ilr.user
+        """, (category.id, map.id)
+    )
+
+    output = [[x['USER'], x['TIME'], x['PLACEMENT'], x['USERID']] for x in r]
+
+    return output
     
     
 def getSumOfIlsRank(db: Interface, category: Category.Category, time: float, includeAdvanced: bool):
