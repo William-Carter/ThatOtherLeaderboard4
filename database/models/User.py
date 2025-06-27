@@ -132,7 +132,7 @@ class User:
             runObjects.append(newRunObject)
 
         return runObjects
-    
+
 
     def getILPersonalBests(self) -> dict[ilc.IndividualLevelCategory: dict[Map.Map: ilr.IndividualLevelRun]]:
         """
@@ -184,9 +184,22 @@ class User:
     def getILPersonalBest(self, category: ilc.IndividualLevelCategory, map: Map.Map) -> ilr.IndividualLevelRun|None:
         pbs = self.getILPersonalBests()
         return pbs[category][map]
-        
-
     
+
+    def getILRuns(self):
+        runs = self.db.executeQuery(
+            """
+            SELECT run, map, category, MIN(time), date
+            FROM IndividualLevelRunCategories ilrc
+            LEFT JOIN IndividualLevelRuns ilr ON ilrc.run = ilr.id
+            WHERE user = ?
+            GROUP BY category, map
+            ORDER BY date DESC
+            """, (self.id,)
+        )
+
+        return [ilr.individualLevelrun(self.db, x['run']) for x in runs]
+
 
     def getMapTimes(self, category: Category.Category, type: str) -> dict[Map.Map: float]:
         r = self.db.executeQuery(

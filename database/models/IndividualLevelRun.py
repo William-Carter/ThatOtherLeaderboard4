@@ -30,7 +30,7 @@ class IndividualLevelRun:
 
         return rank[0]['calculatedRank']
 
-def individualLevelrun(db: Interface, id: str) -> IndividualLevelRun:
+def individualLevelrun(db: Interface.Interface, id: str) -> IndividualLevelRun:
     r = db.executeQuery("""
         SELECT id, user, time, date, map
         FROM IndividualLevelRuns
