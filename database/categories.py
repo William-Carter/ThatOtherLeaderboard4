@@ -44,7 +44,7 @@ def getMainILCategories(db: Interface) -> list[ilc.IndividualLevelCategory]:
     categories = []
     q = db.executeQuery("SELECT id FROM IndividualLevelCategories WHERE isExtension = 0 ORDER BY id")
     for category in q:
-        categories.append(Category.category(db, category['id']))
+        categories.append(ilc.individualLevelCategory(db, category['id']))
 
     return categories
 

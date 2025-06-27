@@ -13,7 +13,7 @@ class IndividualLevelRun:
         self.categories = categories
 
 
-    def getRankInCategory(self, category: IndividualLevelCategory):
+    def getRankInCategory(self, category: IndividualLevelCategory) -> int:
         # TODO: Passing the map into the query is dumb when the map is determined by the run ID, make it not dumb at some point
         rank = self.db.executeQuery("""
             SELECT calculatedRank
