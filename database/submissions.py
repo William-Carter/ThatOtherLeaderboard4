@@ -69,3 +69,18 @@ def submitIndividualLevelRun(db: Interface, user: User, time: float, date: str, 
 
     run = IndividualLevelRun.individualLevelrun(db, runId)
     return run
+
+
+def deleteIndividualLevelRun(db: Interface, runId: int):
+    db.insertAndFetchRowID(
+        """
+        DELETE FROM IndividualLevelRunCategories
+        WHERE run = ?
+        """, (runId,))
+    
+    db.insertAndFetchRowID(
+        """
+        DELETE FROM IndividualLevelRuns
+        WHERE id = ?
+        """, (runId,)
+    )

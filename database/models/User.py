@@ -183,7 +183,6 @@ class User:
 
     def getILPersonalBest(self, category: ilc.IndividualLevelCategory, map: Map.Map) -> ilr.IndividualLevelRun|None:
         pbs = self.getILPersonalBests()
-        print(pbs)
         return pbs[category][map]
         
 
