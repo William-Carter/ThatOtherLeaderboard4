@@ -37,7 +37,7 @@ def generateSheet(headers: list[str], columns: list[list]):
             if len(row) == 1:
                 if row[0] == "-":
                     width = max(columnSingleElementSizes[index], (columnFirstElementSizes[index]+columnSecondElementSizes[index]))
-                    fullRow.append("-"*width)
+                    fullRow.append("─"*width)
                 else:
                     fullRow.append(row[0])
             elif len(row) == 2:
