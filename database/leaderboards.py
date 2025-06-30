@@ -287,3 +287,39 @@ def getIlPointsLeaderboard(db: Interface, category: Category.Category = None):
         output.append([row['name'], str(int(round(row['total'], 0)))])
 
     return output
+
+
+def getIlPointsRank(db: Interface, pointsTotal: float, category: Category.Category = None):
+    if category:
+        categorySpecifier = f"AND ILC.id = '{category.id}'"
+    else:
+        categorySpecifier = ""
+
+    r = db.executeQuery(
+        f"""
+        SELECT COUNT(id) as rank
+        FROM (
+            SELECT id, name, SUM(points(placement)) as total
+            FROM (
+                SELECT Users.id AS id, Users.name AS name, ILRC.category, ILR.map, MIN(ILR.time) as fastestRun, RANK() OVER (PARTITION BY ILRC.category, ILR.map ORDER BY ILR.time ASC) as placement
+                FROM IndividualLevelRunCategories ILRC
+                LEFT JOIN IndividualLevelRuns ILR ON ILRC.run = ILR.id
+                LEFT JOIN Users ON ILR.user = Users.id
+                LEFT JOIN IndividualLevelCategories ILC ON ILRC.category = ILC.id
+                LEFT JOIN IndividualLevelCategoryActiveMaps ILCAM ON ILC.id = ILCAM.category AND ILR.map = ILCAM.map
+
+                WHERE ILC.isExtension = 0
+                AND ILCAM.active = 1
+                {categorySpecifier}
+
+                GROUP BY Users.id, ILRC.category, ILR.map
+            )
+            GROUP BY id
+            ORDER BY total DESC
+        )
+        WHERE total > ?
+        """, (pointsTotal,),
+        customFunctions= [["points", 1, ilpoints.points]]
+    )
+
+    return r[0]['rank']+1
