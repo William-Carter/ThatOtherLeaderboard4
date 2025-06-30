@@ -1,6 +1,7 @@
 from database.Interface import Interface
 from database.models import User
 from database.models import Category
+from database.models import IndividualLevelCategory as ilc
 from database.models import FullGameRun
 from database.models import Country
 from database.models import Continent
@@ -323,3 +324,45 @@ def getIlPointsRank(db: Interface, pointsTotal: float, category: Category.Catego
     )
 
     return r[0]['rank']+1
+
+
+def getIlWorldRecords(db: Interface):
+    """
+    Get all the individual level world records
+
+    Returns:
+        A dict in the format { IndividualLevelCategory: {Map: {"time": int, "runners": [User]}}}
+    """
+    r = db.executeQuery(
+        """
+        SELECT ilr.id, ilr.map, ilrc.category, ilr.user, ilr.time
+        FROM IndividualLevelRunCategories ilrc
+        LEFT JOIN IndividualLevelRuns ilr ON ilrc.run = ilr.id
+        LEFT JOIN Maps ON ilr.map = Maps.id
+        LEFT JOIN (
+            SELECT silr.id, silr.map, silrc.category, MIN(silr.time) as time
+            FROM IndividualLevelRunCategories silrc
+            LEFT JOIN IndividualLevelRuns silr ON silrc.run = silr.id
+            LEFT JOIN Maps smaps ON silr.map = smaps.id
+            GROUP BY silrc.category, silr.map
+            ) AS sq
+            ON Maps.id = sq.map AND ilrc.category = sq.category
+        WHERE ilr.time = sq.time
+        ORDER BY Maps.mapOrder
+        """
+    )
+
+    records = {}
+    for row in r:
+        cat = ilc.individualLevelCategory(db, row['category'])
+        level = Map.map(db, row['map'])
+        if not cat in records.keys():
+            records[cat] = {}
+
+        if not level in records[cat].keys():
+            records[cat][level] = {"time": 0, "runners": []}
+
+        records[cat][level]["time"] = row['time']
+        records[cat][level]["runners"].append(User.userFromId(db, row['user']))
+
+    return records

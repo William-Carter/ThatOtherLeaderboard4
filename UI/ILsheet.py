@@ -50,10 +50,9 @@ def generateSheet(headers: list[str], columns: list[list]):
 
 
 if __name__ == "__main__":
-    headers = ["Map", "Glitchless", "Inbounds", "Out of Bounds"]
-    columns = [[["00/01"], ["02/03"], ["04/05"], ["-"]], 
-               [["2:02.940", "3rd"], ["1:07.245", "2nd"], ["59.910","3rd"], ["-"]],
-               [["1:10.890", "4th"], ["56.490", "2nd"], ["58.275", "11th"], ["-"]]
+    headers = ["Map", "Record"]
+    columns = [[["00/01"], ["02/03"], ["04/05"], ["-"], ["Total"]], 
+               [["2:02.940", "alatreph"], ["1:07.245", "nick"], ["59.910","sidious"], ["-"], ["69:42.000"]],
                ]
-    generateSheet( headers, columns)
+    print(generateSheet( headers, columns))
 

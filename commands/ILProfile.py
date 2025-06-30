@@ -105,6 +105,6 @@ class ILProfile(interactions.Extension):
 
         result = tabulate.tabulate(table, headers, "rounded_outline", numalign="left")
 
-        await ctx.send(f"```ansi\n{result}```")
+        await ctx.send(f"IL Profile for {userObj.name}\n```ansi\n{result}```")
             
 
