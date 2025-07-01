@@ -64,8 +64,9 @@ class ILProfile(interactions.Extension):
             data[cat]['rank'] = database.leaderboards.getIlPointsRank(self.bot.db, round(data[cat]['points'], 2), cat)
 
         
-        headers = ["Category", "Points", "Rank", "Maps Run", "Avg. Rank", "NoAdv Time", "Total Time"]
-        table = []
+        headers = ["Stat"]
+        table = [["Points", "Rank", "Maps Run", "Avg. Rank", "NoAdv Time", "Total Time"]]
+        table 
 
         totalPoints = 0
         totalMaps = 0
@@ -76,25 +77,40 @@ class ILProfile(interactions.Extension):
             totalPoints += data[cat]['points']
             totalRuns = data[cat]['nonAdvMapsRun']+data[cat]['advMapsRun']
             totalMaps += totalRuns
-            avgRank = data[cat]['sumOfRanks']/totalRuns
-            totalAvg += avgRank
+            
+            
             totalNoAdv += data[cat]["noAdvSoils"]
             total += data[cat]["totalSoils"]
-            row = [
-                cat.name.title(),
-                str(round(data[cat]['points'], 0)),
-                durations.formatLeaderBoardPosition(data[cat]["rank"], True),
-                f"{data[cat]['nonAdvMapsRun']}/18 {data[cat]['advMapsRun']}/6",
-                str(round(avgRank, 2)),
-                durations.formatted(data[cat]["noAdvSoils"]),
-                durations.formatted(data[cat]["totalSoils"])
-            ]
+
+            if totalRuns == 0:
+                avgRank = 0
+                row = [
+                    "No runs!",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                ]
+
+            else:
+                avgRank = data[cat]['sumOfRanks']/totalRuns
+                row = [
+                    str(int(round(data[cat]['points'], 0))),
+                    durations.formatLeaderBoardPosition(data[cat]["rank"], True),
+                    f"{data[cat]['nonAdvMapsRun']}/18 {data[cat]['advMapsRun']}/6",
+                    str(round(avgRank, 2)) if avgRank else "",
+                    durations.formatted(data[cat]["noAdvSoils"]),
+                    durations.formatted(data[cat]["totalSoils"])
+                ]
+
+            totalAvg += avgRank
             table.append(row)
+            headers.append(cat.name.title())
 
         table.append(
             [
-                "Total",
-                str(round(totalPoints, 0)),
+                str(int(round(totalPoints, 0))),
                 durations.formatLeaderBoardPosition(database.leaderboards.getIlPointsRank(self.bot.db, round(totalPoints, 2)), True),
                 f"{totalMaps}/72",
                 str(round(totalAvg/len(data.keys()), 2)),
@@ -102,6 +118,9 @@ class ILProfile(interactions.Extension):
                 durations.formatted(total)
             ]
         )
+
+        headers.append("Total")
+        table = zip(*table)
 
         result = tabulate.tabulate(table, headers, "rounded_outline", numalign="left")
 
