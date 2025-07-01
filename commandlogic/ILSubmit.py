@@ -68,7 +68,7 @@ async def ILSubmit(command: interactions.Extension, ctx: interactions.SlashConte
                         int(round(database.ilpoints.points(newRank), 0))
                         ])
 
-    response = f"```ansi\nSubmitted a run of {UI.durations.formatted(run.time)} to {categoryObj.name.title()} for {userObj.name}"
+    response = f"```ansi\nSubmitted a run of {UI.durations.formatted(run.time)} to {mapObj.name} {categoryObj.name.title()} for {userObj.name}"
     for change in changes:
         difference = abs(change[2]-change[1])
 
