@@ -4,7 +4,7 @@ def generateSheet(headers: list[str], columns: list[list]):
     columnFirstElementSizes = [0 for column in columns]
     columnSecondElementSizes = [0 for column in columns]
     columnSingleElementSizes = [0 for column in columns]
-    subColumnPadding = 2
+    subColumnPadding = 1
     for i in range(len(columns)):
         firstElementSize = 0
         secondElementSize = 0
