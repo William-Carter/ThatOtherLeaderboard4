@@ -80,10 +80,16 @@ class Profile(interactions.Extension):
         if sprmResult:
             sprmSum, sprmPlacement = sprmResult
 
+
+        ilPoints = userObj.getILPointsTotal()
+        ilRank = database.leaderboards.getIlPointsRank(self.bot.db, ilPoints)
+
         response = f"```ansi\n{UI.differences.underline(f'Profile for {userObj.name}:')}"
 
 
         response += "\n"+UI.neatTables.generateTable(data, padding=3)
+
+        response += f"\n{UI.differences.underline('IL Points:')}    {int(round(ilPoints, 0))} ({UI.durations.formatLeaderBoardPosition(ilRank, True)})"
 
         if amcResult:
             response += f"\n{UI.differences.underline('AMC Summary:')}  {UI.durations.formatted(amcTime)} ({UI.durations.formatLeaderBoardPosition(amcRank, True)})"
@@ -92,6 +98,7 @@ class Profile(interactions.Extension):
 
         if sprmResult:
             response += f"\n{UI.differences.underline('Overall SPRM:')} {int(round(sprmSum, 0))} ({UI.durations.formatLeaderBoardPosition(sprmPlacement, True)})"
+            
 
         if userObj.country:
             response += UI.differences.underline(f"\n\nRepresenting {userObj.country.name.title()}")

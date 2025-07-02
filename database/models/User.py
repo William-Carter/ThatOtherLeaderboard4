@@ -10,6 +10,8 @@ from database.models import SetupElement
 from database.models import UserSetup
 from database import categories
 from database import Maps
+from database import ilpoints
+from database import leaderboards
 class User:
     def __init__(self, db: Interface, id: int, name: str, srcId: str, discordId: str, countryId: str):
         self.db = db
@@ -185,6 +187,15 @@ class User:
         pbs = self.getILPersonalBests()
         return pbs[category][map]
     
+    def getILPointsTotal(self) -> float:
+        pointsTotal = 0
+        pbs = self.getILPersonalBests()
+        for category in pbs.keys():
+            for run in pbs[category].values():
+                if run:
+                    pointsTotal += ilpoints.points(run.getRankInCategory(category))
+    
+        return pointsTotal
 
     def getILRuns(self):
         runs = self.db.executeQuery(

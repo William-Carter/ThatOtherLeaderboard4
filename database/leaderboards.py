@@ -127,7 +127,7 @@ def getAverageRankLeadboard(db: Interface):
     return r
 
 
-def getAverageRank(db: Interface, user: User.User):
+def getAverageRank(db: Interface, user: 'User.User'):
     arboard = getAverageRankLeadboard(db)
     for ar in arboard:
         if ar['id'] == user.id:
