@@ -48,7 +48,7 @@ def categoryFromName(db: Interface, name: str) -> Category:
                     FROM FullGameCategoryNames
                     LEFT JOIN FullGameCategories on FullGameCategoryNames.category = FullGameCategories.id
                     WHERE FullGameCategoryNames.name = ?
-    """, (name,))
+    """, (name.lower(),))
 
     if len(v) == 0:
         return None

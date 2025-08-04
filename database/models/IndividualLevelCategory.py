@@ -47,7 +47,7 @@ def individualLevelCategoryFromName(db: Interface, name: str) -> IndividualLevel
         SELECT category
         FROM IndividualLevelCategoryNames
         WHERE name = ?
-    """, (name,))
+    """, (name.lower(),))
 
     if len(r) == 0:
         return None
