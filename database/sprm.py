@@ -2,6 +2,19 @@ from database.Interface import Interface
 from database.models.Category import Category
 from database.models import User
 
+from database.sprmFuncs import inbounds_20251116 as inbounds, glitchless_20251116 as glitchless, unrestricted_20251116 as unrestricted, legacy_20251116 as legacy, oob_20251116 as oob
+
+
+def getFunc(category: str):
+    catFuncs = {
+        "glitchless": glitchless,
+        "inbounds": inbounds,
+        "oob": oob,
+        "legacy": legacy,
+        "unrestricted": unrestricted
+    }
+
+    return catFuncs[category]
 
 def calculateSprm(db: Interface, category: Category, time: float) -> float|None:
     """
@@ -15,15 +28,8 @@ def calculateSprm(db: Interface, category: Category, time: float) -> float|None:
     Returns:
         The float SPRM value rounded to two decimal places if the category is valid, None if it isn't
     """
-    q = db.executeQuery("SELECT a, b, c FROM sprmValues WHERE category = ?", (category.id,))
-    if len(q) == 0:
-        return None
-    
-    a = q[0]['a']
-    b = q[0]['b']
-    c = q[0]['c']
-
-    return round(a * 10**b * (time**c), 2)
+    func = getFunc(category.id)
+    return float(func.func(time))
         
 def calculateInverseSprm(db: Interface, category: Category, sprm: float) -> float|None:
     """
@@ -38,17 +44,12 @@ def calculateInverseSprm(db: Interface, category: Category, sprm: float) -> floa
         The float time value rounded to three decimal places if the category is valid, None if it isn't
     """
     
-    q = db.executeQuery("SELECT a, b, c FROM sprmValues WHERE category = ?", (category.id,))
-    if len(q) == 0:
-        return None
-    
-    a = q[0]['a']
-    b = q[0]['b']
-    c = q[0]['c']
+    func = getFunc(category.id)
+    return float(func.inv(sprm))
 
-
-    return round((sprm/(a*10**b))**(1/c), 3)
-
+def calcSprmFromId(category: str, time: float) -> float|None:
+    func = getFunc(category)
+    return float(func.func(time))
 
 
 def getSprmLeaderboard(db: Interface):
@@ -59,7 +60,7 @@ def getSprmLeaderboard(db: Interface):
             SELECT 
             fgr.user as user, 
             fgrc.category,
-            (sv.a * POWER(10, sv.b)) * (POWER(MIN(fgr.time), sv.c)) AS score
+            SPRM(fgrc.category, MIN(fgr.time)) AS score
             FROM FullGameRunCategories fgrc
             LEFT JOIN FullGameRuns fgr ON fgrc.run = fgr.id
             LEFT JOIN FullGameCategories fgc ON fgrc.category = fgc.id
@@ -70,7 +71,7 @@ def getSprmLeaderboard(db: Interface):
         LEFT JOIN Users ON subquery.user = Users.id
         GROUP BY Users.id
         ORDER BY sprm DESC
-    """)
+    """, customFunctions=[["SPRM", 2, calcSprmFromId]])
 
     return q
 
