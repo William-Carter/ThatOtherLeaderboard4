@@ -21,6 +21,7 @@ class Sprmboard(interactions.Extension):
     )
 
     async def sprmboard(self, ctx: interactions.SlashContext, start: int = 1):
+        await ctx.defer()
         header = "Leaderboard for SPRM:\n"
 
         dbData = database.sprm.getSprmLeaderboard(self.bot.db)
