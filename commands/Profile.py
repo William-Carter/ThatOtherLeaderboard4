@@ -21,6 +21,7 @@ class Profile(interactions.Extension):
     )
 
     async def profile(self, ctx: interactions.SlashContext, username: str = None):
+        await ctx.defer()
         if username:
             userObj = database.models.User.userFromName(self.bot.db, username.lower())
             if userObj == None:
