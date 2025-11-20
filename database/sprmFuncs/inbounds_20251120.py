@@ -1,5 +1,5 @@
-from database.sprmFuncs.pchip import pchip2
-
+from database.sprmFuncs.pchip import pchip3
+from scipy.interpolate import PchipInterpolator
 xValues = [
     440,
     460,
@@ -22,11 +22,18 @@ yValues = [
     0
 ]
 
+ixValues = list(reversed(xValues))
+iyValues = list(reversed(yValues))
+
+
+interpolator = PchipInterpolator(xValues, yValues)
+invInterpolator = PchipInterpolator(iyValues, ixValues)
+
+
 def func(newValue):
-    return pchip2(xValues, yValues, newValue)
+    return pchip3(xValues, yValues, interpolator, newValue)
 
 def inv(newValue):
-    return pchip2(list(reversed(xValues), list(reversed(yValues), newValue)))
-
+    return pchip3(iyValues, ixValues, invInterpolator, newValue)
 
 
