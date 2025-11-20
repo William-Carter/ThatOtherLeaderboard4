@@ -2,7 +2,7 @@ from database.Interface import Interface
 from database.models.Category import Category
 from database.models import User
 
-from database.sprmFuncs import inbounds_20251116 as inbounds, glitchless_20251116 as glitchless, unrestricted_20251116 as unrestricted, legacy_20251116 as legacy, oob_20251116 as oob
+from database.sprmFuncs import inbounds_20251120 as inbounds, glitchless_20251120 as glitchless, unrestricted_20251120 as unrestricted, legacy_20251120 as legacy, oob_20251120 as oob
 
 
 def getFunc(category: str):

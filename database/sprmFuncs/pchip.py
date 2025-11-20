@@ -12,3 +12,17 @@ def pchip(values, newValue):
     yValues = [value[1] for value in values]
     interpolator = PchipInterpolator(xValues, yValues)
     return interpolator(newValue)
+
+def pchip2(xValues, yValues, newValue):
+    maxTime = xValues[-1]
+    minTime = xValues[0]
+    minSprm = yValues[-1]
+    maxSprm = yValues[0]
+    if newValue >= maxTime:
+        return minSprm
+    
+    if newValue <= minTime:
+        return maxSprm
+
+    interpolator = PchipInterpolator(xValues, yValues)
+    return interpolator(newValue)
