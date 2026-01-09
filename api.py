@@ -29,7 +29,7 @@ def downloadRuns(db: Interface.Interface) -> dict:
     # Legacy
     print("Fetching Legacy")
     legacyLeaderboard = requests.get(
-        f"https://www.speedrun.com/api/v1/leaderboards/{values.GAME_PORTAL}/category/{values.CATEGORY_NOSLA}?var-{values.VARIABLE_UNR_OR_LEG}={values.VALUE_UNR_OR_LEG_LEGACY}&embed=players"
+        f"https://www.speedrun.com/api/v1/leaderboards/{values.GAME_PORTAL}/category/{values.CATEGORY_LEGACY}?embed=players"
         ).json()
     
     legacyObj = Category.category(db, "legacy")
@@ -38,7 +38,7 @@ def downloadRuns(db: Interface.Interface) -> dict:
     #Unrestricted
     print("Fetching Unrestricted")
     unrestrictedLeaderboard = requests.get(
-        f"https://www.speedrun.com/api/v1/leaderboards/{values.GAME_PORTAL}/category/{values.CATEGORY_NOSLA}?var-{values.VARIABLE_UNR_OR_LEG}={values.VALUE_UNR_OR_LEG_UNRESTRICTED}&embed=players"
+        f"https://www.speedrun.com/api/v1/leaderboards/{values.GAME_PORTAL}/category/{values.CATEGORY_UNRESTRICTED}?embed=players"
         ).json()
     
     unrestrictedObj = Category.category(db, "unrestricted")
