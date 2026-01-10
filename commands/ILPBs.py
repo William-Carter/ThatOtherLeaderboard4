@@ -11,14 +11,21 @@ class ILPBs(interactions.Extension):
         description="View all of a user's IL PBs"
     )
     @interactions.slash_option(
+        name="category",
+        argument_name="category",
+        description="The category you want to see PBs for",
+        required=True,
+        opt_type=interactions.OptionType.STRING
+    )
+    @interactions.slash_option(
         name="user",
         argument_name="username",
-        description="The user whose IL PBs you wish to see, defaults to yourself if left blank",
+        description="The user whose IL PBs you wish to see. Defaults to yourself if left blank",
         required=False,
         opt_type=interactions.OptionType.STRING
     )
 
-    async def ilpbs(self, ctx: interactions.SlashContext, username: str = None):
+    async def ilpbs(self, ctx: interactions.SlashContext, category: str, username: str = None):
         if username:
             userObj = database.models.User.userFromName(self.bot.db, username.lower())
             if userObj == None:
@@ -30,7 +37,12 @@ class ILPBs(interactions.Extension):
             if userObj == None:
                 await ctx.send(f"User is not registered!")
                 return
-            
+
+        categoryObj = database.models.IndividualLevelCategory.individualLevelCategoryFromName(self.bot.db, category.lower())
+
+        if categoryObj == None:
+            await ctx.send(f"{category.title()} is not a valid category!")
+            return
         
         pbs = userObj.getILPersonalBests()
         headers = ["Map"]
@@ -41,6 +53,10 @@ class ILPBs(interactions.Extension):
         data[0] += [["-"], ["NoAdv"], ["Total"]]
 
         for cat in pbs.keys():
+            # This code will generate a table containing every category, but we have too many categories now so we have to limit it to just one at a time.
+            if cat != categoryObj:
+                continue 
+
             headers.append(cat.name.title())
             column = []
             runningTotal = 0
@@ -77,7 +93,7 @@ class ILPBs(interactions.Extension):
             data.append(column)
 
         
-        output = f"```Personal Bests for {userObj.name}:\n"+UI.ILsheet.generateSheet(headers, data)+"```"
+        output = f"```ansi\nPersonal Bests for {userObj.name}:\n"+UI.ILsheet.generateSheet(headers, data)+"```"
 
         await ctx.send(output)
 

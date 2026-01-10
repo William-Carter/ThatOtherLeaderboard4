@@ -112,7 +112,7 @@ class ILProfile(interactions.Extension):
             [
                 str(int(round(totalPoints, 0))),
                 durations.formatLeaderBoardPosition(database.leaderboards.getIlPointsRank(self.bot.db, round(totalPoints, 2)), True),
-                f"{totalMaps}/72",
+                f"{totalMaps}/96",
                 str(round(totalAvg/len(data.keys()), 2)),
                 durations.formatted(totalNoAdv),
                 durations.formatted(total)
