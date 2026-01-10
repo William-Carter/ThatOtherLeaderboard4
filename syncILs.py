@@ -13,7 +13,8 @@ from SRC.SRCValues import values
 
 categoryIds = {
     "oob": "xw20jzkn",
-    "inbounds": "xwdmg4dq",
+    "legacy": "xwdmg4dq",
+    "inbounds": "n2yp4y12",
     "glitchless": "02qoxl7k"
 }
 categories = {v: k for k, v in categoryIds.items()}
