@@ -56,7 +56,7 @@ class ILRecords(interactions.Extension):
 
 
         table = ILsheet.generateSheet(headers, [maps, records, runners])
-        await ctx.send(f"World Records for {categoryObj.name.title()}\n```\n"+table+"```")
+        await ctx.send(f"IL Records for {categoryObj.name.title()}\n```\n"+table+"```")
 
 
 
