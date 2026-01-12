@@ -2,9 +2,10 @@ class values:
     GAME_PORTAL = "4pd0n31e"
 
     CATEGORY_INBOUNDS = "7wkp6v2r"
-    CATEGORY_NOSLA = "n2yq98ko"
+    CATEGORY_LEGACY = "n2yq98ko"
     CATEGORY_OOB = "lvdowokp"
     CATEGORY_GLITCHLESS = "wk6pexd1"
+    CATEGORY_UNRESTRICTED = "rkl7w46d"
 
 
     VARIABLE_PC_CONSOLE = "kn0mz7ol"
@@ -38,8 +39,10 @@ def getCategory(categoryId: str):
             category = "Glitchless"
         case values.CATEGORY_OOB:
             category = "Out of Bounds"
-        case values.CATEGORY_NOSLA:
-            category = "No SLA"
+        case values.CATEGORY_LEGACY:
+            category = "Legacy"
+        case values.CATEGORY_UNRESTRICTED:
+            category = "Unrestricted"
         
         case _:
             category = None
