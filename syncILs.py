@@ -2,6 +2,7 @@ import sys
 import requests
 import json
 import UI.durations
+import logging
 from database.Interface import Interface
 from database.models import User
 from database.models import Map
@@ -9,6 +10,10 @@ from database.models import IndividualLevelCategory
 from database import submissions
 
 from SRC.SRCValues import values
+
+
+logger = logging.getLogger("ilsync")
+logger.setLevel(logging.INFO)
 
 
 categoryIds = {
@@ -70,7 +75,7 @@ def addUser(db: Interface, user: dict):
         else:
             country = countryCodes[alpha2].lower()
 
-    print(f"Inserting user named {user['names']['international']}")
+    
     db.insertAndFetchRowID(
         """
         INSERT INTO Users (name, srcId, representing)
@@ -78,6 +83,7 @@ def addUser(db: Interface, user: dict):
         """,
         (user['names']['international'], user['id'], country)
     )
+    logger.info(f"Inserted user named {user['names']['international']}")
     
 def addRun(db: Interface, run: dict):
     runData = run["run"]
@@ -114,13 +120,14 @@ def addRun(db: Interface, run: dict):
     runMapObj = Map.map(db, runLevel)
     runCategoryObj = IndividualLevelCategory.individualLevelCategory(db, runCategory)
 
-    print(f"Inserting {runCategoryObj.name} {runMapObj.name} run of {UI.durations.formatted(runTime)} by {userObj.name}")
     submissions.submitIndividualLevelRun(db, userObj, runTime, runDate, runMapObj, runCategoryObj)
-
+    logger.info(f"Inserted {runCategoryObj.name} {runMapObj.name} run of {UI.durations.formatted(runTime)} by {userObj.name}")
 
 def sync(db: Interface, category: str, map: str):
+    logger.info(f"Fetching leaderboard for {category} {map} from speedrun.com")
     response = requests.get(f"https://speedrun.com/api/v1/leaderboards/{values.GAME_PORTAL}/level/{levelIds[map]}/{categoryIds[category]}?embed=players")
     if response.status_code != 200:
+        logger.error(f"Fetching from speedrun.com returned status {response.status_code}")
         return
     
     data = response.json()['data']
