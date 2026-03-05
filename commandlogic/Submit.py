@@ -88,10 +88,10 @@ async def activityFeed(command: interactions.Extension, userObj: User, categoryO
     if globalRank == 1:
         response += ", a new World Record!"
 
-    elif run.getRankInCategoryInContinent(categoryObj, userObj.country.continent) == 1:
+    elif userObj.country and (run.getRankInCategoryInContinent(categoryObj, userObj.country.continent) == 1):
         response += f", a new record for {userObj.country.continent.name.title()} and {UI.durations.formatLeaderBoardPosition(globalRank)} in the world!"
 
-    elif run.getRankInCategoryInCountry(categoryObj, userObj.country) == 1:
+    elif userObj.country and (run.getRankInCategoryInCountry(categoryObj, userObj.country) == 1):
         response += f", a new record for {userObj.country.name.title()} and {UI.durations.formatLeaderBoardPosition(globalRank)} in the world!"
 
     else:
