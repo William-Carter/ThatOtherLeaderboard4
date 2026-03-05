@@ -86,7 +86,6 @@ class Profile(interactions.Extension):
 
         response = f"```ansi\n{UI.differences.underline(f'Profile for {userObj.name}:')}"
 
-
         response += "\n"+UI.neatTables.generateTable(data, padding=3)
 
         response += f"\n{UI.differences.underline('IL Points:')}    {int(round(ilPoints, 0))} ({UI.durations.formatLeaderBoardPosition(ilRank, True)})"
