@@ -200,7 +200,7 @@ class User:
 
                 pointsTotal += ilpoints.points(run.getRankInCategory(category))
     
-        return pointsTotal
+        return round(pointsTotal, 2)
 
     def getILRuns(self):
         runs = self.db.executeQuery(
