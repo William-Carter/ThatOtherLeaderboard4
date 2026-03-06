@@ -192,10 +192,10 @@ class User:
         pbs = self.getILPersonalBests()
         for category in pbs.keys():
             for run in pbs[category].values():
-                if not categories.checkILActiveness(self.db, run.mapId, category.id):
+                if not run:
                     continue
 
-                if not run:
+                if not categories.checkILActiveness(self.db, run.mapId, category.id):
                     continue
 
                 pointsTotal += ilpoints.points(run.getRankInCategory(category))
