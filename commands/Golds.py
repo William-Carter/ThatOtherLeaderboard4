@@ -73,7 +73,7 @@ class Golds(interactions.Extension):
             ])
 
         tableData.append(["", "", ""])
-        sumOfBestRank = database.Golds.getSumOfBestRank(self.bot.db, categoryObj, sumOfBest)
+        sumOfBestRank = database.Golds.getSumOfBestRank(self.bot.db, categoryObj, round(sumOfBest, 3))
         tableData.append(["Total", UI.durations.formatted(sumOfBest), UI.durations.formatLeaderBoardPosition(sumOfBestRank, colorCode=True)])
         output += UI.neatTables.generateTable(tableData)
         if ineligibleGold:
