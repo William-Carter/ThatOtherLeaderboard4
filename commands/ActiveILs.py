@@ -13,7 +13,7 @@ class ILMapCategories(interactions.Extension):
     async def ilmapcats(self, ctx: interactions.SlashContext):
         categories = database.categories.getMainILCategories(self.bot.db)
 
-        map_rows = database.Maps.getMainLevels(self.bot.db)
+        map_rows = database.Maps.getMainLevels(self.bot.db, includeAdvanced=True)
 
         headers = ["Map"] + [category.name[0].upper() for category in categories]
 
