@@ -284,11 +284,8 @@ def getIlPointsLeaderboard(db: Interface, category: Category.Category = None):
     )
 
     output = []
-    buffed = ["alatreph"]
     for row in r:
         total = int(round(row['total'], 0))
-        if row['name'] in buffed:
-            total += 1
         output.append([row['name'], str(total)])
 
     return output
