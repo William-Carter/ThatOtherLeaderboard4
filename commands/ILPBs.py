@@ -1,6 +1,7 @@
 import interactions
 import UI.durations
 import UI.ILsheet
+import database.ilpoints as ilp
 import database.models.User
 from database import leaderboards
 from database import Maps
@@ -67,7 +68,7 @@ class ILPBs(interactions.Extension):
                 pb = pbs[cat][map]
                 if pb != None:
                     rank = pb.getRankInCategory(cat)
-                    column.append([UI.durations.formatted(pb.time), UI.durations.formatLeaderBoardPosition(rank)])
+                    column.append([UI.durations.formatted(pb.time), UI.durations.formatLeaderBoardPosition(rank), str(round(ilp.points(rank)))])
                     runningTotal += pb.time
                     mapsTotal += 1
                     if map.order <= 17:
@@ -81,7 +82,7 @@ class ILPBs(interactions.Extension):
                 rank = leaderboards.getSumOfIlsRank(self.bot.db, cat, runningTotal, True)
                 totalRow = [UI.durations.formatted(runningTotal), UI.durations.formatLeaderBoardPosition(rank)]
             else:
-                totalRow = [""]
+                totalRow = [str(round(userObj.getILPointsTotal()))]
 
             if noAdvMapsTotal == 18:
                 rank = leaderboards.getSumOfIlsRank(self.bot.db, cat, noAdvTotal, False)
