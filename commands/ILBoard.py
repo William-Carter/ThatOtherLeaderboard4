@@ -37,7 +37,7 @@ class ILBoard(interactions.Extension):
     async def ilboard(self, ctx: interactions.SlashContext, category: str, map: str, start: int = 1):
 
 
-        categoryObj = database.models.IndividualLevelCategory.individualLevelCategoryFromName(self.bot.db, category.lower())
+        categoryObj = database.models.IndividualLevelCategory.individualLevelCategoryFromName(self.bot.db, category)
 
         if categoryObj == None:
             await ctx.send(f"{category.title()} is not a valid category!")

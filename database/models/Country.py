@@ -39,7 +39,7 @@ def countryFromName(db: Interface, name: str) -> Country:
                         SELECT country as ID
                         FROM CountryNames
                         WHERE name = ?
-    """, (name,))
+    """, (name.lower(),))
 
     if len(v) == 0:
         return None

@@ -46,7 +46,7 @@ def mapFromName(db: Interface, name: str) -> Map:
                         SELECT map as ID
                         FROM MapNames
                         WHERE name = ?
-    """, (name,))
+    """, (name.lower(),))
 
     if len(v) == 0:
         return None

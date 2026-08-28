@@ -39,7 +39,7 @@ def continentFromName(db: Interface, name: str) -> Continent:
                     SELECT continent AS ID
                     FROM ContinentNames
                     WHERE name = ?
-    """, (name,))
+    """, (name.lower(),))
 
     if len(v) == 0:
         return None
