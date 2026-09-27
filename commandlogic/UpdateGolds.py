@@ -17,7 +17,7 @@ async def Updategolds(command: interactions.Extension, ctx: interactions.SlashCo
     
     maps = Maps.getMainLevels(command.bot.db)
 
-    timeList = times.strip().split(" ")
+    timeList = times.strip().split()
     if len(timeList) != len(maps):
         await ctx.send("Incorrect number of times given!")
         return

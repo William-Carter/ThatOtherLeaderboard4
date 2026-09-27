@@ -16,7 +16,7 @@ async def UpdateSegments(command: interactions.Extension, ctx: interactions.Slas
     
     maps = Maps.getMainLevels(command.bot.db)
 
-    timeList = times.strip().split(" ")
+    timeList = times.strip().split()
     if len(timeList) != len(maps):
         await ctx.send("Incorrect number of times given!")
         return
